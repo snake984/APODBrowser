@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">APODBrowser</string>
+    <string name="placeholder_search">Search</string>
+    <string name="latest_pics">Latest pictures</string>
+    <string name="random_pictures">Random</string>
+    <string name="bottom_navigation_home">Home</string>
+    <string name="bottom_navigation_favorites">Favorites</string>
 </resources>
