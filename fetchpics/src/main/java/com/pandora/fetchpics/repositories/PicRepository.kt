@@ -37,7 +37,7 @@ class PicRepositoryImpl : PicRepository {
 
         return flowOf(
             fetchedPics
-                .filter { it.title != null && it.date != null && it.url != null }
+                .filter { it.title != null && it.date != null && it.url != null && it.mediaType == "image" }
                 .map {
                     PicOfTheDay(
                         title = it.title ?: throw IllegalStateException("PicOfTheDay parsing error: title not found"),
