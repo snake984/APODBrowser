@@ -12,45 +12,41 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bumptech.glide.integration.compose.CrossFade
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.databinding.HomeFragmentLayoutBinding
+import com.pandora.apodbrowser.ui.LatestCollectionsRow
+import com.pandora.apodbrowser.ui.LoadingView
+import com.pandora.apodbrowser.ui.RandomPicsGrid
+import com.pandora.apodbrowser.ui.RandomPicsRow
+import com.pandora.apodbrowser.ui.SearchBar
+import com.pandora.apodbrowser.ui.SearchResultsView
 import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
 import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.repositories.PicRepositoryImpl
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -65,7 +61,17 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.homeFragmentComposeView.apply {
+        setupHomeContent()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.fetchLatestPicsOfTheDay()
+                viewModel.fetchRandomPicsOfTheDay()
+            }
+        }
+    }
+
+    private fun setupHomeContent() {
+        binding.homeFragmentContentView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 APODBrowserTheme {
@@ -79,100 +85,6 @@ class HomeFragment : Fragment() {
     }
 }
 
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier
-) {
-    TextField(value = "", onValueChange = {}, leadingIcon = {
-        Icon(
-            imageVector = Icons.Default.Search, contentDescription = null
-        )
-    }, colors = TextFieldDefaults.colors(
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        focusedContainerColor = MaterialTheme.colorScheme.surface
-    ), placeholder = {
-        Text(stringResource(R.string.placeholder_search))
-    }, modifier = modifier
-        .fillMaxWidth()
-        .heightIn(min = 56.dp)
-    )
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun RandomPicsElement(
-    picture: PicOfTheDay, modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        GlideImage(
-            modifier = Modifier
-                .size(88.dp)
-                .clip(CircleShape),
-            model = picture.url,
-            contentScale = ContentScale.Crop,
-            contentDescription = picture.title,
-            failure = placeholder(android.R.drawable.ic_menu_camera)
-        )
-        Text(
-            text = picture.date,
-            modifier = Modifier.paddingFromBaseline(top = 24.dp, bottom = 8.dp),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-    }
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun LatestCollectionCard(
-    picture: PicOfTheDay, modifier: Modifier = Modifier
-) {
-    Surface(
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier
-    ) {
-        GlideImage(
-            model = picture.url,
-            modifier = modifier,
-            contentScale = ContentScale.Crop,
-            contentDescription = picture.title,
-            transition = CrossFade
-        )
-    }
-}
-
-@Composable
-fun RandomPicsRow(
-    data: List<PicOfTheDay>, modifier: Modifier = Modifier
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = modifier
-    ) {
-        items(data) { item ->
-            RandomPicsElement(item, modifier)
-        }
-    }
-}
-
-// Step: Favorite collections grid - LazyGrid
-@Composable
-fun LatestCollectionsRow(
-    data: List<PicOfTheDay>, modifier: Modifier = Modifier
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = modifier
-    ) {
-        items(data) { item ->
-            LatestCollectionCard(item, modifier.size(255.dp, 144.dp))
-        }
-    }
-}
 
 // Step: Home section - Slot APIs
 @Composable
@@ -198,42 +110,36 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
         val randomPics by viewModel.randomPicsOfTheDay.collectAsStateWithLifecycle()
         val latestPics by viewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
 
-        if (latestPics.isNotEmpty() && randomPics.isNotEmpty()) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-                Spacer(Modifier.height(16.dp))
-                SearchBar(Modifier.padding(horizontal = 16.dp))
-                HomeSection(title = R.string.latest_pics) {
-                    LatestCollectionsRow(latestPics)
-                }
-                HomeSection(title = R.string.random_pictures) {
-                    RandomPicsRow(randomPics)
-                }
-
-                Spacer(Modifier.height(16.dp))
-
+            Spacer(Modifier.height(16.dp))
+            SearchBar(Modifier.padding(horizontal = 16.dp), viewModel.searchText) {
+                viewModel.updateSearchResults(it)
             }
-        } else {
-            LoadingView()
-            viewModel.fetchLatestPicsOfTheDay()
-            viewModel.fetchRandomPicsOfTheDay()
+            Spacer(Modifier.height(16.dp))
+
+            if (latestPics.isNotEmpty() && randomPics.isNotEmpty()) {
+                val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
+                val searchInput by viewModel.searchText.collectAsStateWithLifecycle()
+
+                if (searchInput.isNotBlank()) {
+                    SearchResultsView(searchResults, modifier)
+                } else {
+                    HomeSection(title = R.string.latest_pics) {
+                        LatestCollectionsRow(latestPics)
+                    }
+                    HomeSection(title = R.string.random_pictures) {
+                        RandomPicsGrid(data = randomPics)
+                    }
+                }
+            } else {
+                LoadingView()
+            }
         }
 
-    }
-}
-
-@Composable
-private fun LoadingView() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        CircularProgressIndicator()
-        Text(text = "Loading")
     }
 }
