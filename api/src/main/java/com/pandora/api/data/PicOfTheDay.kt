@@ -1,16 +1,15 @@
 package com.pandora.api.data
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
+
 data class PicOfTheDay(
     val title: String? = null,
     val date: String? = null,
     val explanation: String? = null,
-    @SerialName("media_type") val mediaType: String? = null,
+    @SerializedName("media_type") val mediaType: String? = null,
     val url: String? = null,
-    @SerialName("hdurl") val hdUrl: String? = null,
+    @SerializedName("hdurl") val hdUrl: String? = null,
     val copyright: String? = null,
-    @SerialName("service_version") val serviceVersion: String? = null,
+    @SerializedName("service_version") val serviceVersion: String? = null,
 )

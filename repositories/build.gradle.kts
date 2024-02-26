@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization") version "1.9.22"
     kotlin("kapt")
 }
 
@@ -42,7 +41,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
-    implementation(libs.retrofit)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit4)
     androidTestImplementation(libs.androidx.test.espresso.core)

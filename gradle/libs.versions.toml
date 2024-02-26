@@ -25,7 +25,7 @@ hilt-navigation-compose = "1.2.0"
 junit = "4.13.2"
 kotest = "5.5.4"
 kotlin = "1.9.22"
-kotlinx-serialization-json = "1.5.0"
+kotlinx-serialization-json = "1.6.2"
 kover = "0.5.0"
 ktlint = "11.0.0"
 ktlint-plugin = "7.1.0"
@@ -103,6 +103,7 @@ ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref =
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2-kotlinx-serialization-converter" }
 moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 glide = { module = "com.github.bumptech.glide:glide", name = "glide", version.ref = "glide" }
 glide-compose = { module = "com.github.bumptech.glide:compose", name = "glide-compose", version.ref = "glide-compose" }
