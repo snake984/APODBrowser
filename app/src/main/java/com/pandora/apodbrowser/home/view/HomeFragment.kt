@@ -1,22 +1,17 @@
-package com.pandora.apodbrowser.home
+package com.pandora.apodbrowser.home.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,24 +28,33 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.databinding.HomeFragmentLayoutBinding
+import com.pandora.apodbrowser.di.component
+import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
+import com.pandora.apodbrowser.home.viewmodel.HomeViewModelFactory
 import com.pandora.apodbrowser.ui.LatestCollectionsRow
 import com.pandora.apodbrowser.ui.LoadingView
 import com.pandora.apodbrowser.ui.RandomPicsGrid
-import com.pandora.apodbrowser.ui.RandomPicsRow
 import com.pandora.apodbrowser.ui.SearchBar
 import com.pandora.apodbrowser.ui.SearchResultsView
 import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
-import com.pandora.fetchpics.model.PicOfTheDay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: HomeFragmentLayoutBinding
-    private val viewModel: HomeViewModel by viewModels<HomeViewModel> { HomeViewModel.Factory }
+
+    @Inject
+    lateinit var viewModelFactory: HomeViewModelFactory
+    private val viewModel: HomeViewModel by viewModels<HomeViewModel> { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        component().inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -86,7 +89,6 @@ class HomeFragment : Fragment() {
 }
 
 
-// Step: Home section - Slot APIs
 @Composable
 fun HomeSection(
     @StringRes title: Int, modifier: Modifier = Modifier, content: @Composable () -> Unit
@@ -103,7 +105,6 @@ fun HomeSection(
     }
 }
 
-// Step: Home screen - Scrolling
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

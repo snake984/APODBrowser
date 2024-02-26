@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/home"
-        android:name="com.pandora.apodbrowser.home.HomeFragment"
+        android:name="com.pandora.apodbrowser.home.view.HomeFragment"
         android:label="Home" />
 </navigation>

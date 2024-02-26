@@ -7,12 +7,13 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.time.ZonedDateTime
+import javax.inject.Inject
 
 interface Requester {
     val apodApi: APODApi
 }
 
-class RetrofitRequester : Requester {
+internal class RetrofitRequester : Requester {
     override val apodApi: APODApi =
         retrofit.create(APODApi::class.java)
 

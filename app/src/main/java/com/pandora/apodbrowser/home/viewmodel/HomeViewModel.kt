@@ -1,13 +1,9 @@
-package com.pandora.apodbrowser.home
+package com.pandora.apodbrowser.home.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.repositories.PicRepository
-import com.pandora.fetchpics.repositories.PicRepositoryImpl
+import com.pandora.fetchpics.usecases.FetchPicsUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
-class HomeViewModel(private val fetchRepository: PicRepository) : ViewModel() {
+class HomeViewModel(private val fetchPicsUsecase: FetchPicsUsecase) : ViewModel() {
     private val _latestPicsOfTheDay = MutableStateFlow<List<PicOfTheDay>>(emptyList())
     val latestPicsOfTheDay: StateFlow<List<PicOfTheDay>> = _latestPicsOfTheDay
 
@@ -44,7 +40,7 @@ class HomeViewModel(private val fetchRepository: PicRepository) : ViewModel() {
 
     fun fetchLatestPicsOfTheDay() {
         viewModelScope.launch(Dispatchers.IO) {
-            fetchRepository.getPicsOfTheDay(
+            fetchPicsUsecase.getPicsOfTheDay(
                 startDate = ZonedDateTime.now().minusDays(7),
                 endDate = ZonedDateTime.now()
             ).collectLatest {
@@ -55,7 +51,7 @@ class HomeViewModel(private val fetchRepository: PicRepository) : ViewModel() {
 
     fun fetchRandomPicsOfTheDay() {
         viewModelScope.launch(Dispatchers.IO) {
-            fetchRepository.getPicsOfTheDay(randomCount = 5).collectLatest {
+            fetchPicsUsecase.getPicsOfTheDay(randomCount = 5).collectLatest {
                 _randomPicsOfTheDay.value = it
             }
         }
@@ -64,13 +60,4 @@ class HomeViewModel(private val fetchRepository: PicRepository) : ViewModel() {
     fun updateSearchResults(text: String) {
         _searchText.value = text
     }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                HomeViewModel(PicRepositoryImpl())
-            }
-        }
-    }
-
 }

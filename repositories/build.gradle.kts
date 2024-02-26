@@ -3,15 +3,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "1.9.22"
     kotlin("kapt")
-
 }
 
 android {
-    namespace = "com.pandora.fetchpics"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    namespace = "com.pandora.repositories"
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -34,10 +33,17 @@ android {
         jvmTarget = "11"
     }
 }
+
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.retrofit)
+    implementation(project(":fetchpics"))
+    implementation(project(":api"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
+    implementation(libs.retrofit)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.junit4)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

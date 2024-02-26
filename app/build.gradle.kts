@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+
 }
 
 android {
@@ -52,6 +54,10 @@ android {
 
 dependencies {
 
+    implementation(project(":api"))
+    implementation(project(":repositories"))
+    implementation(project(":fetchpics"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -66,8 +72,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.glide)
     implementation(libs.glide.compose)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 
-    implementation(project(":fetchpics"))
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
