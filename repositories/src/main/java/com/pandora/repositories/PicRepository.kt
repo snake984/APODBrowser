@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.time.ZonedDateTime
 import javax.inject.Inject
+import javax.inject.Named
 
-internal class PicRepositoryImpl @Inject constructor(private val requester: Requester) :
+internal class PicRepositoryImpl(private val requester: Requester, private val apiKey: String) :
     PicRepository {
 
     override fun getPicsOfTheDay(
@@ -18,13 +19,13 @@ internal class PicRepositoryImpl @Inject constructor(private val requester: Requ
     ): Flow<List<PicOfTheDay>> {
         val fetchedPics = if (randomCount == null) {
             requester.apodApi.fetchPicsOfTheDay(
-                "XAQPfUbcpTfkhPvoz6cJ8xGGLVaa8Qg2dF30LpIe",
+                apiKey,
                 startDate.toLocalDate(),
                 endDate?.toLocalDate()
             ).execute()
         } else {
             requester.apodApi.fetchRandomPics(
-                "XAQPfUbcpTfkhPvoz6cJ8xGGLVaa8Qg2dF30LpIe",
+                apiKey,
                 randomCount
             ).execute()
         }.body() ?: emptyList()

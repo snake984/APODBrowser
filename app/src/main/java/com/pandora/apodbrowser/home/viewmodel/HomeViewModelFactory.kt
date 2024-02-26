@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.pandora.fetchpics.usecases.FetchPicsUsecase
 import javax.inject.Inject
 
-class HomeViewModelFactory @Inject constructor(private val fetchPicsUsecase: FetchPicsUsecase): ViewModelProvider.Factory {
+class HomeViewModelFactory(private val fetchPicsUsecase: FetchPicsUsecase): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         HomeViewModel(fetchPicsUsecase) as T
 }

@@ -11,6 +11,10 @@ import javax.inject.Inject
 
 interface Requester {
     val apodApi: APODApi
+
+    companion object {
+        const val APOD_API_KEY_DI_TAG = "apodApiKey"
+    }
 }
 
 internal class RetrofitRequester : Requester {

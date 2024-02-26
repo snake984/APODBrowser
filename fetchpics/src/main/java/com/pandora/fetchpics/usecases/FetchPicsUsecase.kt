@@ -15,7 +15,7 @@ interface FetchPicsUsecase {
     ): Flow<List<PicOfTheDay>>
 }
 
-internal class FetchPicsUsecaseImpl @Inject constructor(private val picRepository: PicRepository) : FetchPicsUsecase {
+internal class FetchPicsUsecaseImpl(private val picRepository: PicRepository) : FetchPicsUsecase {
     override fun getPicsOfTheDay(
         startDate: ZonedDateTime,
         endDate: ZonedDateTime?,
