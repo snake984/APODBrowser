@@ -5,10 +5,7 @@ import com.pandora.fetchpics.model.PicOfTheDay
 import com.pandora.fetchpics.repositories.PicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import java.time.ZonedDateTime
-import javax.inject.Inject
-import javax.inject.Named
 
 internal class PicRepositoryImpl(private val requester: Requester, private val apiKey: String) :
     PicRepository {

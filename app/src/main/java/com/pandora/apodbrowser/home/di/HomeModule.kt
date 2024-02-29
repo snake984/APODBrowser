@@ -1,6 +1,7 @@
 package com.pandora.apodbrowser.home.di
 
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModelFactory
+import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
 import com.pandora.fetchpics.usecases.FetchPicsUsecase
 import dagger.Module
 import dagger.Provides
@@ -9,6 +10,9 @@ import dagger.Provides
 object HomeModule {
 
     @Provides
-    fun provideHomeViewModelFactory(fetchPicsUsecase: FetchPicsUsecase): HomeViewModelFactory =
-        HomeViewModelFactory(fetchPicsUsecase)
+    fun provideHomeViewModelFactory(
+        fetchPicsUsecase: FetchPicsUsecase,
+        fetchPaginatedPicsUsecase: FetchPaginatedPicsUsecase
+    ): HomeViewModelFactory =
+        HomeViewModelFactory(fetchPicsUsecase, fetchPaginatedPicsUsecase)
 }

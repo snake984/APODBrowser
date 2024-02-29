@@ -2,7 +2,12 @@ package com.pandora.apodbrowser.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.pandora.fetchpics.model.PicOfTheDay
+import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
 import com.pandora.fetchpics.usecases.FetchPicsUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,16 +16,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
-class HomeViewModel(private val fetchPicsUsecase: FetchPicsUsecase) : ViewModel() {
+class HomeViewModel(private val fetchPicsUsecase: FetchPicsUsecase, fetchPaginatedPicsUsecase: FetchPaginatedPicsUsecase) : ViewModel() {
+
+    val pagedRandomPics = fetchPaginatedPicsUsecase.getPager().flow.cachedIn(viewModelScope)
+
     private val _latestPicsOfTheDay = MutableStateFlow<List<PicOfTheDay>>(emptyList())
     val latestPicsOfTheDay: StateFlow<List<PicOfTheDay>> = _latestPicsOfTheDay
-
-    private val _randomPicsOfTheDay = MutableStateFlow<List<PicOfTheDay>>(emptyList())
-    val randomPicsOfTheDay: StateFlow<List<PicOfTheDay>> = _randomPicsOfTheDay
 
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText
@@ -46,14 +52,6 @@ class HomeViewModel(private val fetchPicsUsecase: FetchPicsUsecase) : ViewModel(
             ).collectLatest {
                     _latestPicsOfTheDay.value = it
                 }
-        }
-    }
-
-    fun fetchRandomPicsOfTheDay() {
-        viewModelScope.launch(Dispatchers.IO) {
-            fetchPicsUsecase.getPicsOfTheDay(randomCount = 5).collectLatest {
-                _randomPicsOfTheDay.value = it
-            }
         }
     }
 

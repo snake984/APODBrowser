@@ -2,10 +2,13 @@ package com.pandora.apodbrowser.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
 import com.pandora.fetchpics.usecases.FetchPicsUsecase
-import javax.inject.Inject
 
-class HomeViewModelFactory(private val fetchPicsUsecase: FetchPicsUsecase): ViewModelProvider.Factory {
+class HomeViewModelFactory(
+    private val fetchPicsUsecase: FetchPicsUsecase,
+    private val fetchPaginatedPicsUsecase: FetchPaginatedPicsUsecase
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        HomeViewModel(fetchPicsUsecase) as T
+        HomeViewModel(fetchPicsUsecase, fetchPaginatedPicsUsecase) as T
 }

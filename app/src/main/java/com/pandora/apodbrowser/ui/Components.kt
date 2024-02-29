@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -172,7 +173,7 @@ fun RandomPicsRow(
 @Composable
 fun RandomPicsGrid(
     modifier: Modifier = Modifier,
-    data: List<PicOfTheDay>
+    data: LazyPagingItems<PicOfTheDay>
 ) {
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxSize(),
@@ -181,8 +182,8 @@ fun RandomPicsGrid(
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         content = {
-            items(items = data, key = { it.url }) { item ->
-                RandomPicsGridCard(item)
+            items(count = data.itemCount) { index ->
+                data[index]?.let { RandomPicsGridCard(it) }
             }
         },
     )

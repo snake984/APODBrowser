@@ -28,6 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.databinding.HomeFragmentLayoutBinding
 import com.pandora.apodbrowser.di.component
@@ -68,7 +69,6 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.fetchLatestPicsOfTheDay()
-                viewModel.fetchRandomPicsOfTheDay()
             }
         }
     }
@@ -108,7 +108,7 @@ fun HomeSection(
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        val randomPics by viewModel.randomPicsOfTheDay.collectAsStateWithLifecycle()
+        val randomPics = viewModel.pagedRandomPics.collectAsLazyPagingItems()
         val latestPics by viewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
 
         Column(
@@ -123,7 +123,7 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
             }
             Spacer(Modifier.height(16.dp))
 
-            if (latestPics.isNotEmpty() && randomPics.isNotEmpty()) {
+            if (latestPics.isNotEmpty() && !randomPics.loadState.hasError) {
                 val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
                 val searchInput by viewModel.searchText.collectAsStateWithLifecycle()
 
