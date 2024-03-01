@@ -118,7 +118,7 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
         ) {
 
             Spacer(Modifier.height(16.dp))
-            SearchBar(Modifier.padding(horizontal = 16.dp), viewModel.searchText) {
+            SearchBar(Modifier.padding(horizontal = 16.dp)) {
                 viewModel.updateSearchResults(it)
             }
             Spacer(Modifier.height(16.dp))
@@ -127,7 +127,7 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
                 val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
                 val searchInput by viewModel.searchText.collectAsStateWithLifecycle()
 
-                if (searchInput.isNotBlank()) {
+                if (searchInput.isNotEmpty()) {
                     SearchResultsView(searchResults, modifier)
                 } else {
                     HomeSection(title = R.string.latest_pics) {

@@ -35,11 +35,6 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
-        //setContent {
-        //    APODBrowserTheme {
-        //        APODBrowserAppPortrait()
-        //    }
-        // }
     }
 
     private fun findNavController(): NavController {
@@ -50,7 +45,6 @@ class MainActivity : FragmentActivity() {
 }
 
 
-// Step: Bottom navigation - Material
 @Composable
 private fun APODBrowserBottomNavigation(
     modifier: Modifier = Modifier,
@@ -72,7 +66,9 @@ private fun APODBrowserBottomNavigation(
             },
             selected = true,
             onClick = {
-                navController.navigate(R.id.home)
+                if (navController.currentDestination?.id != R.id.home) {
+                    navController.navigate(R.id.home)
+                }
             }
         )
         NavigationBarItem(
