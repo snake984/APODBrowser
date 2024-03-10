@@ -1,9 +1,6 @@
-package com.pandora.apodbrowser.picturedetail
+package com.pandora.apodbrowser.picturedetail.view
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.os.Parcelable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -20,7 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,69 +25,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.fragment.app.Fragment
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.pandora.apodbrowser.databinding.PictureDetailFragmentLayoutBinding
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
-import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
+import com.pandora.apodbrowser.ui.theme.md_theme_dark_primary
 import com.pandora.apodbrowser.ui.theme.thirty_percent_transparent_black
-
-class PictureDetailFragment : Fragment() {
-
-    private lateinit var binding: PictureDetailFragmentLayoutBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = PictureDetailFragmentLayoutBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupDetailContent()
-    }
-
-    private fun setupDetailContent() {
-        binding.pictureDetailFragmentContentView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                APODBrowserTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                    ) {
-                        val pictureItem =
-                            arguments?.getParcelable(ARGS_KEY) as? PicOfTheDayItem
-                        pictureItem?.let {
-                            PictureDetailScreen(
-                                navController = findNavController(),
-                                pictureItem = pictureItem
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val ARGS_KEY = "picture_detail_args_key"
-    }
-}
 
 @Composable
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
-private fun PictureDetailScreen(
+fun PictureDetailScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     pictureItem: PicOfTheDayItem
@@ -110,11 +61,11 @@ private fun PictureDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.AutoMirrored.Default.ArrowBack, null)
                     }
                 },
-                colors = topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     navigationIconContentColor = MaterialTheme.colorScheme.primary,
                 )
@@ -147,7 +98,7 @@ private fun PictureDetailScreen(
                             .padding(top = 4.dp, start = 8.dp, end = 8.dp)
                             .verticalScroll(rememberScrollState()),
                         text = explanation,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = md_theme_dark_primary,
                         textAlign = TextAlign.Justify
                     )
                 }

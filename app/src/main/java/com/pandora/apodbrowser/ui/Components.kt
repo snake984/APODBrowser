@@ -52,7 +52,6 @@ fun LoadingView() {
         verticalArrangement = Arrangement.Center,
     ) {
         CircularProgressIndicator()
-        Text(text = "Loading")
     }
 }
 
@@ -143,7 +142,8 @@ private fun FullWidthPictureItem(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun RandomPicsElement(
-    picture: PicOfTheDay, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    picture: PicOfTheDay,
 ) {
     Column(
         modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
@@ -191,7 +191,8 @@ fun LatestCollectionCard(
 
 @Composable
 fun RandomPicsRow(
-    data: List<PicOfTheDay>, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    data: List<PicOfTheDay>,
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -199,7 +200,7 @@ fun RandomPicsRow(
         modifier = modifier
     ) {
         items(data) { item ->
-            RandomPicsElement(item, modifier)
+            RandomPicsElement(picture = item, modifier =  modifier)
         }
     }
 }
@@ -263,7 +264,7 @@ fun LatestCollectionsRow(
         modifier = modifier
     ) {
         items(items = data, key = { it.url }) { item ->
-            LatestCollectionCard(picture = item, modifier =  modifier.size(255.dp, 144.dp), onItemClick =  onItemClick)
+            LatestCollectionCard(picture = item, modifier =  modifier.size(256.dp, 144.dp), onItemClick =  onItemClick)
         }
     }
 }
