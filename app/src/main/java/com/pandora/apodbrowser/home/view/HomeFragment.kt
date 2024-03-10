@@ -22,30 +22,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pandora.apodbrowser.R
-import com.pandora.apodbrowser.databinding.HomeFragmentLayoutBinding
+import com.pandora.apodbrowser.databinding.MainFragmentLayoutBinding
 import com.pandora.apodbrowser.di.component
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModelFactory
+import com.pandora.apodbrowser.picturedetail.PictureDetailFragment
 import com.pandora.apodbrowser.ui.LatestCollectionsRow
 import com.pandora.apodbrowser.ui.LoadingView
 import com.pandora.apodbrowser.ui.RandomPicsGrid
 import com.pandora.apodbrowser.ui.SearchBar
 import com.pandora.apodbrowser.ui.SearchResultsView
+import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: HomeFragmentLayoutBinding
+    private lateinit var binding: MainFragmentLayoutBinding
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
@@ -60,7 +65,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = HomeFragmentLayoutBinding.inflate(inflater, container, false)
+        binding = MainFragmentLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -74,13 +79,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupHomeContent() {
-        binding.homeFragmentContentView.apply {
+        binding.mainFragmentContentView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 APODBrowserTheme {
                     HomeScreen(
                         modifier = Modifier.fillMaxSize(),
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        navController = findNavController(),
                     )
                 }
             }
@@ -106,7 +112,11 @@ fun HomeSection(
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
+    navController: NavController,
+) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         val randomPics = viewModel.pagedRandomPics.collectAsLazyPagingItems()
         val latestPics by viewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
@@ -127,14 +137,25 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
                 val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
                 val searchInput by viewModel.searchText.collectAsStateWithLifecycle()
 
+                val redirectToDetail = { item: PicOfTheDayItem ->
+                    navController.navigate(
+                        R.id.pictureDetail,
+                        bundleOf(PictureDetailFragment.ARGS_KEY to item),
+                    )
+                }
+
                 if (searchInput.isNotEmpty()) {
-                    SearchResultsView(searchResults, modifier)
+                    SearchResultsView(
+                        searchResults = searchResults,
+                        modifier = modifier,
+                        onItemClick = redirectToDetail
+                    )
                 } else {
                     HomeSection(title = R.string.latest_pics) {
-                        LatestCollectionsRow(latestPics)
+                        LatestCollectionsRow(data = latestPics, onItemClick = redirectToDetail)
                     }
                     HomeSection(title = R.string.random_pictures) {
-                        RandomPicsGrid(data = randomPics)
+                        RandomPicsGrid(data = randomPics, onItemClick = redirectToDetail)
                     }
                 }
             } else {

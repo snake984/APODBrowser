@@ -1,12 +1,9 @@
 package com.pandora.fetchpics.usecases
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
 import com.pandora.fetchpics.model.PicOfTheDay
 import com.pandora.fetchpics.repositories.PicRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.ZonedDateTime
 
 interface FetchPicsUsecase {
@@ -26,6 +23,7 @@ internal class FetchPicsUsecaseImpl(
         randomCount: Int?
     ): Flow<List<PicOfTheDay>> {
         return picRepository.getPicsOfTheDay(startDate, endDate, randomCount)
+            .map { it.reversed() }
     }
 }
 

@@ -73,7 +73,7 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun APODBrowserTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
         DarkColors

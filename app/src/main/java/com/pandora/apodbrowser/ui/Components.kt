@@ -35,12 +35,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.pandora.apodbrowser.R
+import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.fetchpics.model.PicOfTheDay
 
 @Composable
@@ -98,10 +100,10 @@ fun SearchBar(
 }
 
 @Composable
-@OptIn(ExperimentalGlideComposeApi::class)
 fun SearchResultsView(
-    searchResults: List<PicOfTheDay>,
-    modifier: Modifier
+    modifier: Modifier,
+    searchResults: List<PicOfTheDayItem>,
+    onItemClick: (PicOfTheDayItem) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -110,19 +112,31 @@ fun SearchResultsView(
 
         ) {
         items(searchResults) {
-            Surface(
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = modifier
-            ) {
-                GlideImage(
-                    modifier = modifier.fillMaxWidth(),
-                    model = it.url,
-                    contentScale = ContentScale.Crop,
-                    contentDescription = it.title
-                )
-            }
+            FullWidthPictureItem(modifier, it, onItemClick)
         }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+private fun FullWidthPictureItem(
+    modifier: Modifier,
+    item: PicOfTheDayItem,
+    onItemClick: (PicOfTheDayItem) -> Unit
+) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.clickable {
+            onItemClick(item)
+        }
+    ) {
+        GlideImage(
+            modifier = modifier.fillMaxWidth(),
+            model = item.url,
+            contentScale = ContentScale.Crop,
+            contentDescription = item.title
+        )
     }
 }
 
@@ -154,12 +168,16 @@ fun RandomPicsElement(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LatestCollectionCard(
-    picture: PicOfTheDay, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    picture: PicOfTheDayItem,
+    onItemClick: (PicOfTheDayItem) -> Unit
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier
+        modifier = modifier.clickable {
+            onItemClick(picture)
+        }
     ) {
         GlideImage(
             model = picture.url,
@@ -189,17 +207,23 @@ fun RandomPicsRow(
 @Composable
 fun RandomPicsGrid(
     modifier: Modifier = Modifier,
-    data: LazyPagingItems<PicOfTheDay>
+    data: LazyPagingItems<PicOfTheDayItem>,
+    onItemClick: (PicOfTheDayItem) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxSize(),
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 2.dp,
-        contentPadding = PaddingValues(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         content = {
-            items(count = data.itemCount) { index ->
-                data[index]?.let { RandomPicsGridCard(it) }
+            items(count = data.itemCount, key = { data[it]?.hashCode() ?: it }) { index ->
+                data[index]?.let { RandomPicsGridCard(item = it, onItemClick = onItemClick) }
+            }
+            if (data.loadState.append == LoadState.Loading) {
+                item {
+                    LoadingView()
+                }
             }
         },
     )
@@ -207,9 +231,14 @@ fun RandomPicsGrid(
 
 @Composable
 @OptIn(ExperimentalGlideComposeApi::class)
-private fun RandomPicsGridCard(item: PicOfTheDay) {
+private fun RandomPicsGridCard(
+    modifier: Modifier = Modifier,
+    item: PicOfTheDayItem,
+    onItemClick: (PicOfTheDayItem) -> Unit
+) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.clickable { onItemClick(item) }
     ) {
         GlideImage(
             model = item.url,
@@ -224,7 +253,9 @@ private fun RandomPicsGridCard(item: PicOfTheDay) {
 
 @Composable
 fun LatestCollectionsRow(
-    data: List<PicOfTheDay>, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    data: List<PicOfTheDayItem>,
+    onItemClick: (PicOfTheDayItem) -> Unit
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -232,7 +263,7 @@ fun LatestCollectionsRow(
         modifier = modifier
     ) {
         items(items = data, key = { it.url }) { item ->
-            LatestCollectionCard(item, modifier.size(255.dp, 144.dp))
+            LatestCollectionCard(picture = item, modifier =  modifier.size(255.dp, 144.dp), onItemClick =  onItemClick)
         }
     }
 }

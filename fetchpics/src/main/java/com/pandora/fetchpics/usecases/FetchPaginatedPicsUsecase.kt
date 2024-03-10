@@ -7,13 +7,12 @@ import androidx.paging.PagingSource
 import com.pandora.fetchpics.model.PicOfTheDay
 import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase.Companion.PAGE_SIZE
 import java.time.ZonedDateTime
-import kotlin.random.Random
 
 interface FetchPaginatedPicsUsecase {
     fun getPager(): Pager<PagingKey, PicOfTheDay>
 
     companion object {
-        const val PAGE_SIZE = 10
+        const val PAGE_SIZE = 20
         val INITIAL_PAGING_KEY = PagingKey(ZonedDateTime.now().minusDays((50..10000).random().toLong()))
     }
 }

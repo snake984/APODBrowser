@@ -4,12 +4,12 @@
     android:layout_height="match_parent">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/homeFragmentContentView"
+        android:id="@+id/mainFragmentContentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/homeFragmentSearchView"
+        android:id="@+id/mainFragmentSearchView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

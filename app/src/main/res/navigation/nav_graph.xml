@@ -8,4 +8,9 @@
         android:id="@+id/home"
         android:name="com.pandora.apodbrowser.home.view.HomeFragment"
         android:label="Home" />
+
+    <fragment
+        android:id="@+id/pictureDetail"
+        android:name="com.pandora.apodbrowser.picturedetail.PictureDetailFragment"
+        android:label="Detail" />
 </navigation>
