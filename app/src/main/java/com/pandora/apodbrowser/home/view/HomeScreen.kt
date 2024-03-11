@@ -101,7 +101,7 @@ fun HomeScreen(
                     }
                 }
             } else {
-                LoadingView()
+                LoadingView(animationResId = R.raw.loading_big)
             }
         }
     }

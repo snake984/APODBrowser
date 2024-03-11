@@ -40,6 +40,7 @@ retrofit = "2.9.0"
 retrofit2-kotlinx-serialization-converter = "1.0.0"
 glide = "4.14.2"
 glide-compose = "1.0.0-beta01"
+lottie-compose = "6.4.0"
 secrets = "2.0.1"
 
 [libraries]
@@ -105,6 +106,9 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
+
+# Lottie
+lottie-compose = {module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose"}
 
 # Retrofit
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }

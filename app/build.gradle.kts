@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.glide)
     implementation(libs.glide.compose)
+    implementation(libs.lottie.compose)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 

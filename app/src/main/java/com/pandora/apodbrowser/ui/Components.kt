@@ -1,5 +1,6 @@
 package com.pandora.apodbrowser.ui
 
+import androidx.annotation.RawRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -37,6 +38,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -46,13 +51,21 @@ import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.fetchpics.model.PicOfTheDay
 
 @Composable
-fun LoadingView() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        CircularProgressIndicator()
-    }
+fun LoadingView(
+    modifier: Modifier = Modifier,
+    @RawRes animationResId: Int,
+) {
+    val animationComposition by rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(
+            resId = animationResId
+        )
+    )
+
+    LottieAnimation(
+        modifier = modifier,
+        composition = animationComposition,
+        iterations = LottieConstants.IterateForever
+    )
 }
 
 @Composable
@@ -200,7 +213,7 @@ fun RandomPicsRow(
         modifier = modifier
     ) {
         items(data) { item ->
-            RandomPicsElement(picture = item, modifier =  modifier)
+            RandomPicsElement(picture = item, modifier = modifier)
         }
     }
 }
@@ -223,7 +236,7 @@ fun RandomPicsGrid(
             }
             if (data.loadState.append == LoadState.Loading) {
                 item {
-                    LoadingView()
+                    LoadingView(modifier = modifier.size(56.dp), animationResId = R.raw.loading_small)
                 }
             }
         },
@@ -264,7 +277,11 @@ fun LatestCollectionsRow(
         modifier = modifier
     ) {
         items(items = data, key = { it.url }) { item ->
-            LatestCollectionCard(picture = item, modifier =  modifier.size(256.dp, 144.dp), onItemClick =  onItemClick)
+            LatestCollectionCard(
+                picture = item,
+                modifier = modifier.size(256.dp, 144.dp),
+                onItemClick = onItemClick
+            )
         }
     }
 }
