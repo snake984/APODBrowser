@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":fetchpics"))
+    implementation(project(":domain"))
     implementation(project(":api"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

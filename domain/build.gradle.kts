@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.pandora.fetchpics"
+    namespace = "com.pandora.domain"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

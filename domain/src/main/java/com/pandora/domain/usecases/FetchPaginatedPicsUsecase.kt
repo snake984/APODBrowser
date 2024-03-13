@@ -1,11 +1,11 @@
-package com.pandora.fetchpics.usecases
+package com.pandora.domain.usecases
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
-import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase.Companion.PAGE_SIZE
+import com.pandora.domain.model.PicOfTheDay
+import com.pandora.domain.usecases.FetchPaginatedPicsUsecase.Companion.PAGE_SIZE
 import java.time.ZonedDateTime
 
 interface FetchPaginatedPicsUsecase {

@@ -2,10 +2,10 @@ package com.pandora.repositories.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.repositories.PicRepository
-import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
-import com.pandora.fetchpics.usecases.PagingKey
+import com.pandora.domain.model.PicOfTheDay
+import com.pandora.domain.repositories.PicRepository
+import com.pandora.domain.usecases.FetchPaginatedPicsUsecase
+import com.pandora.domain.usecases.PagingKey
 import kotlinx.coroutines.flow.first
 
 class PicPagingSource(private val picRepository: PicRepository) :

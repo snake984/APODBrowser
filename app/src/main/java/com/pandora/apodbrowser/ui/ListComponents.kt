@@ -1,137 +1,38 @@
 package com.pandora.apodbrowser.ui
 
-import androidx.annotation.RawRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.bumptech.glide.integration.compose.CrossFade
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
-import com.pandora.fetchpics.model.PicOfTheDay
+import com.pandora.domain.model.PicOfTheDay
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun LoadingView(
-    modifier: Modifier = Modifier,
-    @RawRes animationResId: Int,
-) {
-    val animationComposition by rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(
-            resId = animationResId
-        )
-    )
-
-    LottieAnimation(
-        modifier = modifier,
-        composition = animationComposition,
-        iterations = LottieConstants.IterateForever
-    )
-}
-
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    onValueChange: (String) -> Unit
-) {
-    val text = rememberSaveable {
-        mutableStateOf("")
-    }
-
-    TextField(
-        value = text.value,
-        singleLine = true,
-        onValueChange = {
-            text.value = it
-            onValueChange(it)
-        },
-        trailingIcon = {
-            if (text.value.isNotEmpty()) {
-                Icon(
-                    modifier = Modifier.clickable(enabled = true) {
-                        text.value = ""
-                        onValueChange(text.value)
-                    },
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = null
-                )
-            }
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search, contentDescription = null
-            )
-        }, colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor = MaterialTheme.colorScheme.surface
-        ), placeholder = {
-            Text(stringResource(R.string.placeholder_search))
-        }, modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 56.dp)
-    )
-}
-
-@Composable
-fun SearchResultsView(
-    modifier: Modifier,
-    searchResults: List<PicOfTheDayItem>,
-    onItemClick: (PicOfTheDayItem) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(all = 8.dp),
-
-        ) {
-        items(searchResults) {
-            FullWidthPictureItem(modifier, it, onItemClick)
-        }
-    }
-}
-
-@Composable
-@OptIn(ExperimentalGlideComposeApi::class)
-private fun FullWidthPictureItem(
+fun FullWidthPictureItem(
     modifier: Modifier,
     item: PicOfTheDayItem,
     onItemClick: (PicOfTheDayItem) -> Unit
@@ -145,14 +46,14 @@ private fun FullWidthPictureItem(
     ) {
         GlideImage(
             modifier = modifier.fillMaxWidth(),
-            model = item.url,
-            contentScale = ContentScale.Crop,
-            contentDescription = item.title
+            imageModel = { item.url },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop
+            ),
         )
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun RandomPicsElement(
     modifier: Modifier = Modifier,
@@ -165,10 +66,10 @@ fun RandomPicsElement(
             modifier = Modifier
                 .size(88.dp)
                 .clip(CircleShape),
-            model = picture.url,
-            contentScale = ContentScale.Crop,
-            contentDescription = picture.title,
-            failure = placeholder(android.R.drawable.ic_menu_camera)
+            imageModel = { picture.url },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop
+            ),
         )
         Text(
             text = picture.date,
@@ -178,7 +79,6 @@ fun RandomPicsElement(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LatestCollectionCard(
     modifier: Modifier = Modifier,
@@ -193,11 +93,11 @@ fun LatestCollectionCard(
         }
     ) {
         GlideImage(
-            model = picture.url,
             modifier = modifier,
-            contentScale = ContentScale.Crop,
-            contentDescription = picture.title,
-            transition = CrossFade
+            imageModel = { picture.url },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop
+            )
         )
     }
 }
@@ -236,7 +136,10 @@ fun RandomPicsGrid(
             }
             if (data.loadState.append == LoadState.Loading) {
                 item {
-                    LoadingView(modifier = modifier.size(56.dp), animationResId = R.raw.loading_small)
+                    LoadingView(
+                        modifier = Modifier.size(56.dp),
+                        animationResId = R.raw.loading_small
+                    )
                 }
             }
         },
@@ -244,7 +147,6 @@ fun RandomPicsGrid(
 }
 
 @Composable
-@OptIn(ExperimentalGlideComposeApi::class)
 private fun RandomPicsGridCard(
     modifier: Modifier = Modifier,
     item: PicOfTheDayItem,
@@ -255,9 +157,10 @@ private fun RandomPicsGridCard(
         modifier = modifier.clickable { onItemClick(item) }
     ) {
         GlideImage(
-            model = item.url,
-            contentScale = ContentScale.Crop,
-            contentDescription = item.title,
+            imageModel = { item.url },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()

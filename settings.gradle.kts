@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "APODBrowser"
 include(":app")
-include(":fetchpics")
+include(":domain")
 include(":api")
 include(":storage")
 include(":repositories")

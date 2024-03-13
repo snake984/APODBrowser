@@ -2,8 +2,8 @@ package com.pandora.apodbrowser.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
-import com.pandora.fetchpics.usecases.FetchPicsUsecase
+import com.pandora.domain.usecases.FetchPaginatedPicsUsecase
+import com.pandora.domain.usecases.FetchPicsUsecase
 
 class HomeViewModelFactory(
     private val fetchPicsUsecase: FetchPicsUsecase,

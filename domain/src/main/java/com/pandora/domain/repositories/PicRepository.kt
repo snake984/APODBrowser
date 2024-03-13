@@ -1,6 +1,6 @@
-package com.pandora.fetchpics.repositories
+package com.pandora.domain.repositories
 
-import com.pandora.fetchpics.model.PicOfTheDay
+import com.pandora.domain.model.PicOfTheDay
 import kotlinx.coroutines.flow.Flow
 import java.time.ZonedDateTime
 

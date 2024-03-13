@@ -1,7 +1,7 @@
-package com.pandora.fetchpics.usecases
+package com.pandora.domain.usecases
 
-import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.repositories.PicRepository
+import com.pandora.domain.model.PicOfTheDay
+import com.pandora.domain.repositories.PicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.ZonedDateTime

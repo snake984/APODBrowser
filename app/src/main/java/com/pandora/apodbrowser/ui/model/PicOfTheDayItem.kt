@@ -2,7 +2,7 @@ package com.pandora.apodbrowser.ui.model
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
-import com.pandora.fetchpics.model.PicOfTheDay
+import com.pandora.domain.model.PicOfTheDay
 import kotlinx.parcelize.Parcelize
 
 @Immutable

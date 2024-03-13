@@ -2,9 +2,9 @@ package com.pandora.repositories.di
 
 import androidx.paging.PagingSource
 import com.pandora.api.Requester
-import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.repositories.PicRepository
-import com.pandora.fetchpics.usecases.PagingKey
+import com.pandora.domain.model.PicOfTheDay
+import com.pandora.domain.repositories.PicRepository
+import com.pandora.domain.usecases.PagingKey
 import com.pandora.repositories.PicRepositoryImpl
 import com.pandora.repositories.paging.PicPagingSource
 import dagger.Module

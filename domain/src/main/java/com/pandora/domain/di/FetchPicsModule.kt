@@ -1,13 +1,13 @@
-package com.pandora.fetchpics.di
+package com.pandora.domain.di
 
 import androidx.paging.PagingSource
-import com.pandora.fetchpics.model.PicOfTheDay
-import com.pandora.fetchpics.repositories.PicRepository
-import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
-import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecaseImpl
-import com.pandora.fetchpics.usecases.FetchPicsUsecase
-import com.pandora.fetchpics.usecases.FetchPicsUsecaseImpl
-import com.pandora.fetchpics.usecases.PagingKey
+import com.pandora.domain.model.PicOfTheDay
+import com.pandora.domain.repositories.PicRepository
+import com.pandora.domain.usecases.FetchPaginatedPicsUsecase
+import com.pandora.domain.usecases.FetchPaginatedPicsUsecaseImpl
+import com.pandora.domain.usecases.FetchPicsUsecase
+import com.pandora.domain.usecases.FetchPicsUsecaseImpl
+import com.pandora.domain.usecases.PagingKey
 import dagger.Module
 import dagger.Provides
 

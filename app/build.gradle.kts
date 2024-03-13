@@ -57,7 +57,7 @@ dependencies {
 
     implementation(project(":api"))
     implementation(project(":repositories"))
-    implementation(project(":fetchpics"))
+    implementation(project(":domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -74,8 +74,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.glide)
-    implementation(libs.glide.compose)
+    implementation(libs.landscapist.glide)
     implementation(libs.lottie.compose)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)

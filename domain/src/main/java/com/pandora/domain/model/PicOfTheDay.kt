@@ -1,4 +1,4 @@
-package com.pandora.fetchpics.model
+package com.pandora.domain.model
 
 data class PicOfTheDay(
     val title: String,

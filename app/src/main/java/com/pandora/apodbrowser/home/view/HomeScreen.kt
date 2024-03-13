@@ -20,35 +20,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
+import com.pandora.apodbrowser.ui.ErrorView
 import com.pandora.apodbrowser.ui.LatestCollectionsRow
 import com.pandora.apodbrowser.ui.LoadingView
 import com.pandora.apodbrowser.ui.RandomPicsGrid
 import com.pandora.apodbrowser.ui.SearchBar
 import com.pandora.apodbrowser.ui.SearchResultsView
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
+import com.pandora.domain.errors.NetworkError
 import kotlinx.coroutines.launch
-
-@Composable
-fun HomeSection(
-    modifier: Modifier = Modifier,
-    @StringRes title: Int,
-    content: @Composable () -> Unit
-) {
-    Column(modifier) {
-        Text(
-            text = stringResource(title),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
-        )
-        content()
-    }
-}
 
 @Composable
 fun HomeScreen(
@@ -70,39 +55,81 @@ fun HomeScreen(
         val randomPics = homeViewModel.pagedRandomPics.collectAsLazyPagingItems()
         val latestPics by homeViewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
 
-        Column(
-            modifier = modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        HomeContent(
+            modifier,
+            homeViewModel,
+            latestPics,
+            randomPics,
+            onItemClick
+        )
+    }
+}
 
-            Spacer(Modifier.height(16.dp))
-            SearchBar(Modifier.padding(horizontal = 16.dp)) {
-                homeViewModel.updateSearchResults(it)
-            }
-            Spacer(Modifier.height(16.dp))
+@Composable
+fun HomeContent(
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel,
+    latestPics: List<PicOfTheDayItem>,
+    randomPics: LazyPagingItems<PicOfTheDayItem>,
+    onItemClick: (PicOfTheDayItem) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .padding(top = 16.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-            if (latestPics.isNotEmpty() && !randomPics.loadState.hasError) {
-                val searchResults by homeViewModel.searchResults.collectAsStateWithLifecycle()
-                val searchInput by homeViewModel.searchText.collectAsStateWithLifecycle()
+        SearchBar(modifier.padding(horizontal = 16.dp)) {
+            homeViewModel.updateSearchResults(it)
+        }
+        Spacer(Modifier.height(16.dp))
 
-                if (searchInput.isNotEmpty()) {
-                    SearchResultsView(
-                        searchResults = searchResults,
-                        modifier = modifier,
-                        onItemClick = onItemClick
-                    )
-                } else {
-                    HomeSection(title = R.string.latest_pics) {
-                        LatestCollectionsRow(data = latestPics, onItemClick = onItemClick)
-                    }
-                    HomeSection(title = R.string.random_pictures) {
-                        RandomPicsGrid(data = randomPics, onItemClick = onItemClick)
-                    }
-                }
+        val error by homeViewModel.error.collectAsStateWithLifecycle()
+
+        if (latestPics.isNotEmpty() && !randomPics.loadState.hasError) {
+            val searchResults by homeViewModel.searchResults.collectAsStateWithLifecycle()
+            val searchInput by homeViewModel.searchText.collectAsStateWithLifecycle()
+
+            if (searchInput.isNotEmpty()) {
+                SearchResultsView(
+                    searchResults = searchResults,
+                    modifier = modifier,
+                    onItemClick = onItemClick
+                )
             } else {
-                LoadingView(animationResId = R.raw.loading_big)
+                HomeSection(title = R.string.latest_pics) {
+                    LatestCollectionsRow(data = latestPics, onItemClick = onItemClick)
+                }
+                HomeSection(title = R.string.random_pictures) {
+                    RandomPicsGrid(data = randomPics, onItemClick = onItemClick)
+                }
+            }
+        } else if(error != null) {
+            when(error) {
+                is NetworkError -> ErrorView(animationResId = R.raw.lost_connection)
             }
         }
+        else {
+            LoadingView(animationResId = R.raw.loading_big)
+        }
+    }
+}
+
+@Composable
+fun HomeSection(
+    modifier: Modifier = Modifier,
+    @StringRes title: Int,
+    content: @Composable () -> Unit
+) {
+    Column(modifier) {
+        Text(
+            text = stringResource(title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+        )
+        content()
     }
 }

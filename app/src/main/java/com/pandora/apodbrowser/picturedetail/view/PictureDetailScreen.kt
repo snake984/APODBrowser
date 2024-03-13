@@ -1,6 +1,5 @@
 package com.pandora.apodbrowser.picturedetail.view
 
-import android.os.Parcelable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -29,18 +28,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.apodbrowser.ui.theme.md_theme_dark_primary
 import com.pandora.apodbrowser.ui.theme.thirty_percent_transparent_black
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun PictureDetailScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
@@ -81,10 +77,11 @@ fun PictureDetailScreen(
             val explanationView = createRef()
 
             GlideImage(
-                model = item.hdUrl,
-                contentScale = ContentScale.Crop,
-                contentDescription = item.title,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                imageModel = { item.hdUrl },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop
+                ),
             )
             item.explanation?.let { explanation ->
                 Surface(

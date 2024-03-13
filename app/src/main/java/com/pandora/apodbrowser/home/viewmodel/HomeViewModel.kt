@@ -6,12 +6,14 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.apodbrowser.ui.model.toItem
-import com.pandora.fetchpics.usecases.FetchPaginatedPicsUsecase
-import com.pandora.fetchpics.usecases.FetchPicsUsecase
+import com.pandora.domain.errors.mapToError
+import com.pandora.domain.usecases.FetchPaginatedPicsUsecase
+import com.pandora.domain.usecases.FetchPicsUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -47,7 +49,12 @@ class HomeViewModel(
                             it.explanation?.lowercase()?.contains(text.lowercase()) == true
                 }
             }
+        }.catch {
+         _error.value = it.mapToError()
         }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    private val _error = MutableStateFlow<Throwable?>(null)
+    val error: StateFlow<Throwable?> = _error
 
     fun fetchLatestPicsOfTheDay() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -56,6 +63,8 @@ class HomeViewModel(
                 endDate = ZonedDateTime.now()
             ).map {
                 it.map { it.toItem() }
+            }.catch {
+                _error.value = it.mapToError()
             }.collectLatest {
                 _latestPicsOfTheDay.value = it
             }
