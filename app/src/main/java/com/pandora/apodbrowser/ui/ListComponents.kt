@@ -157,13 +157,16 @@ private fun RandomPicsGridCard(
         modifier = modifier.clickable { onItemClick(item) }
     ) {
         GlideImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             imageModel = { item.url },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
+            failure = {
+                ErrorView(animationResId = R.raw.space_404)
+            }
         )
     }
 }
