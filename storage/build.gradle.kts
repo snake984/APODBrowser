@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -39,6 +39,9 @@ dependencies {
     testImplementation(libs.junit)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }
 
 kapt {

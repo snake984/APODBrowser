@@ -5,6 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 interface Requester {
     val apodApi: APODApi
+    val fileDownloader: FileDownloader
 
     companion object {
         const val APOD_API_KEY_DI_TAG = "apodApiKey"
@@ -13,10 +14,16 @@ interface Requester {
 
 internal class RetrofitRequester : Requester {
     override val apodApi: APODApi =
-        retrofit.create(APODApi::class.java)
+        apodRetrofit.create(APODApi::class.java)
+
+    override val fileDownloader: FileDownloader =
+        Retrofit
+            .Builder()
+            .build()
+            .create(FileDownloader::class.java)
 
     companion object {
-        private val retrofit = Retrofit
+        private val apodRetrofit = Retrofit
             .Builder()
             .baseUrl("https://api.nasa.gov/")
             .addConverterFactory(GsonConverterFactory.create())

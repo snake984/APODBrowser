@@ -28,6 +28,7 @@ hilt-navigation-compose = "1.2.0"
 junit = "4.13.2"
 kotest = "5.5.4"
 kotlin = "1.9.22"
+ksp = "1.9.22-1.0.17"
 kotlinx-serialization-json = "1.6.2"
 kover = "0.5.0"
 ktlint = "11.0.0"
@@ -109,7 +110,7 @@ mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 
 # Lottie
-lottie-compose = {module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose"}
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
 
 # Retrofit
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -120,7 +121,7 @@ gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", ve
 glide = { module = "com.github.bumptech.glide:glide", name = "glide", version.ref = "glide" }
 glide-compose = { module = "com.github.bumptech.glide:compose", name = "glide-compose", version.ref = "glide-compose" }
 
-landscapist-glide = { module = "com.github.skydoves:landscapist-glide", name = "landscapist-glide", version.ref = "landscapist"}
+landscapist-glide = { module = "com.github.skydoves:landscapist-glide", name = "landscapist-glide", version.ref = "landscapist" }
 
 
 [bundles]
@@ -135,6 +136,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt-android-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kover-plugin = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "gradle-plugin" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }

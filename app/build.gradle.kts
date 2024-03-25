@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":repositories"))
     implementation(project(":domain"))
+    implementation(project(":storage"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

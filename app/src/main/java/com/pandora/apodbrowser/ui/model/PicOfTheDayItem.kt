@@ -13,6 +13,7 @@ data class PicOfTheDayItem(
     val url: String,
     val explanation: String? = null,
     val hdUrl: String? = null,
+    val copyright: String? = null,
 ) : Parcelable
 
 fun PicOfTheDay.toItem() = PicOfTheDayItem(
@@ -21,4 +22,5 @@ fun PicOfTheDay.toItem() = PicOfTheDayItem(
     url = url,
     hdUrl = hdUrl,
     explanation = explanation,
+    copyright = copyright,
 )
