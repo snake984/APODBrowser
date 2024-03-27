@@ -19,6 +19,8 @@ internal class RetrofitRequester : Requester {
     override val fileDownloader: FileDownloader =
         Retrofit
             .Builder()
+            //baseUrl is overridden in FileDownloader
+            .baseUrl("https://api.nasa.gov/")
             .build()
             .create(FileDownloader::class.java)
 

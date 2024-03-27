@@ -1,29 +1,22 @@
 package com.pandora.apodbrowser.ui
 
+import android.widget.Toast
 import androidx.annotation.RawRes
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
+import androidx.annotation.StringRes
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.pandora.apodbrowser.R
 
 
 @Composable
@@ -71,4 +64,40 @@ fun ErrorView(
         animationResId = animationResId,
         repeatForever = false
     )
+}
+
+@Composable
+fun Toast(
+    modifier: Modifier = Modifier,
+    @StringRes messageResId: Int,
+    displayLength: Int = Toast.LENGTH_SHORT
+) {
+    val context = LocalContext.current
+    LaunchedEffect(true) {
+        Toast.makeText(
+            context,
+            context.getString(messageResId), displayLength
+        ).show()
+    }
+}
+
+@Composable
+fun Fab(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    @StringRes contentDescription: Int,
+    onClick: () -> Unit
+) {
+    FloatingActionButton(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.secondary,
+        onClick = {
+            onClick()
+        }) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(contentDescription)
+        )
+    }
 }

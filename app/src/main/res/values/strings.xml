@@ -5,4 +5,7 @@
     <string name="random_pictures">Random</string>
     <string name="bottom_navigation_home">Home</string>
     <string name="bottom_navigation_favorites">Favorites</string>
+    <string name="show_explanation">Show explanation</string>
+    <string name="back">Back</string>
+    <string name="no_explanation_found">No explanation found</string>
 </resources>
