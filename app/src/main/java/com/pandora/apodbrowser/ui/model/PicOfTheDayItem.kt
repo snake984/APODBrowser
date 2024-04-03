@@ -24,3 +24,12 @@ fun PicOfTheDay.toItem() = PicOfTheDayItem(
     explanation = explanation,
     copyright = copyright,
 )
+
+fun PicOfTheDayItem.toDomainModel() = PicOfTheDay(
+    title,
+    date,
+    url,
+    explanation,
+    hdUrl,
+    copyright
+)

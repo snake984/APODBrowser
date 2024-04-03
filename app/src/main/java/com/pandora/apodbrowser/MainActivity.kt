@@ -21,11 +21,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pandora.apodbrowser.di.homeComponent
+import com.pandora.apodbrowser.di.pictureDetailComponent
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.view.HomeScreen
 import com.pandora.apodbrowser.navigation.NavigationRoute
 import com.pandora.apodbrowser.navigation.buildNavArguments
 import com.pandora.apodbrowser.navigation.navigate
+import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import com.pandora.apodbrowser.picturedetail.view.PictureDetailScreen
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
@@ -36,7 +38,10 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             APODBrowserTheme {
-                APODBrowserAppPortrait(homeComponent = homeComponent())
+                APODBrowserAppPortrait(
+                    homeComponent = homeComponent(),
+                    pictureDetailComponent = pictureDetailComponent()
+                )
             }
         }
     }
@@ -87,7 +92,10 @@ private fun APODBrowserBottomNavigation(
 }
 
 @Composable
-fun APODBrowserAppPortrait(homeComponent: HomeComponent) {
+fun APODBrowserAppPortrait(
+    homeComponent: HomeComponent,
+    pictureDetailComponent: PictureDetailComponent
+) {
     APODBrowserTheme {
         val navController = rememberNavController()
 
@@ -113,7 +121,11 @@ fun APODBrowserAppPortrait(homeComponent: HomeComponent) {
                     val item =
                         it.arguments?.getParcelable<PicOfTheDayItem>(NavigationRoute.PictureDetail.argsName())
                     item?.let {
-                        PictureDetailScreen(navController = navController, pictureItem = it)
+                        PictureDetailScreen(
+                            diComponent = pictureDetailComponent,
+                            navController = navController,
+                            pictureItem = it
+                        )
                     } ?: run {
                         //TODO - SHow error view
                     }

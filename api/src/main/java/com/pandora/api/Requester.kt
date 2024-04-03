@@ -1,5 +1,6 @@
 package com.pandora.api
 
+import com.pandora.api.converters.ByteArrayConverterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -21,6 +22,7 @@ internal class RetrofitRequester : Requester {
             .Builder()
             //baseUrl is overridden in FileDownloader
             .baseUrl("https://api.nasa.gov/")
+            .addConverterFactory(ByteArrayConverterFactory.create())
             .build()
             .create(FileDownloader::class.java)
 

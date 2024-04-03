@@ -89,4 +89,11 @@ internal class PicRepositoryImpl(
             )
         )
     }
+
+    override suspend fun removePicFromFavorite(favorite: PicOfTheDay) {
+        val url = favorite.hdUrl ?: favorite.url
+        val filename = url.split("/").last()
+        fileManager.deleteImage(filename)
+        favoritePicsDao.deleteByDate(favorite.date)
+    }
 }

@@ -1,7 +1,6 @@
 package com.pandora.storage.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -22,6 +21,6 @@ interface FavoritePicsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pics: List<FavoritePicEntity>)
 
-    @Delete
-    suspend fun delete(pic: FavoritePicEntity)
+    @Query("DELETE FROM favorite_pics WHERE date LIKE :picDate")
+    suspend fun deleteByDate(picDate: String)
 }

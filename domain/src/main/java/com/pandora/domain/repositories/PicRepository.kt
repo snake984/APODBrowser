@@ -15,4 +15,6 @@ interface PicRepository {
     fun getFavorites(): Flow<List<FavoritePic>>
 
     suspend fun saveFavoritePic(favorite: PicOfTheDay)
+
+    suspend fun removePicFromFavorite(favorite: PicOfTheDay)
 }

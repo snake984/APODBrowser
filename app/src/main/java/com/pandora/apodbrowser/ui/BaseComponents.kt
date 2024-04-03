@@ -5,11 +5,13 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -68,7 +70,6 @@ fun ErrorView(
 
 @Composable
 fun Toast(
-    modifier: Modifier = Modifier,
     @StringRes messageResId: Int,
     displayLength: Int = Toast.LENGTH_SHORT
 ) {
@@ -85,6 +86,7 @@ fun Toast(
 fun Fab(
     modifier: Modifier = Modifier,
     icon: ImageVector,
+    tintColor: Color = LocalContentColor.current,
     @StringRes contentDescription: Int,
     onClick: () -> Unit
 ) {
@@ -97,6 +99,7 @@ fun Fab(
         }) {
         Icon(
             imageVector = icon,
+            tint = tintColor,
             contentDescription = stringResource(contentDescription)
         )
     }
