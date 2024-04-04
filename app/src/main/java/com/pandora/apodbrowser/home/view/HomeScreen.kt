@@ -20,8 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
@@ -52,14 +50,9 @@ fun HomeScreen(
         }
     }
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        val randomPics = homeViewModel.pagedRandomPics.collectAsLazyPagingItems()
-        val latestPics by homeViewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
-
         HomeContent(
             modifier,
             homeViewModel,
-            latestPics,
-            randomPics,
             onItemClick
         )
     }
@@ -69,8 +62,6 @@ fun HomeScreen(
 fun HomeContent(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel,
-    latestPics: List<PicOfTheDayItem>,
-    randomPics: LazyPagingItems<PicOfTheDayItem>,
     onItemClick: (PicOfTheDayItem) -> Unit
 ) {
     Column(
@@ -85,9 +76,10 @@ fun HomeContent(
         }
         Spacer(Modifier.height(16.dp))
 
+        val latestPics by homeViewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
         val error by homeViewModel.error.collectAsStateWithLifecycle()
 
-        if (latestPics.isNotEmpty() && !randomPics.loadState.hasError) {
+        if (latestPics.isNotEmpty() && error == null) {
             val searchResults by homeViewModel.searchResults.collectAsStateWithLifecycle()
             val searchInput by homeViewModel.searchText.collectAsStateWithLifecycle()
 
@@ -102,15 +94,14 @@ fun HomeContent(
                     LatestCollectionsRow(data = latestPics, onItemClick = onItemClick)
                 }
                 HomeSection(title = R.string.random_pictures) {
-                    RandomPicsGrid(data = randomPics, onItemClick = onItemClick)
+                    RandomPicsGrid(dataFlow = homeViewModel.pagedRandomPics, onItemClick = onItemClick)
                 }
             }
-        } else if(error != null) {
-            when(error) {
+        } else if (error != null) {
+            when (error) {
                 is NetworkError -> ErrorView(animationResId = R.raw.lost_connection)
             }
-        }
-        else {
+        } else {
             LoadingView(animationResId = R.raw.loading_big)
         }
     }

@@ -6,13 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,12 +24,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.domain.model.PicOfTheDay
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun FullWidthPictureItem(
@@ -121,17 +126,18 @@ fun RandomPicsRow(
 @Composable
 fun RandomPicsGrid(
     modifier: Modifier = Modifier,
-    data: LazyPagingItems<PicOfTheDayItem>,
+    dataFlow: Flow<PagingData<PicOfTheDayItem>>,
     onItemClick: (PicOfTheDayItem) -> Unit
 ) {
-    LazyVerticalStaggeredGrid(
+    val data = dataFlow.collectAsLazyPagingItems()
+
+    LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),
-        columns = StaggeredGridCells.Fixed(2),
-        verticalItemSpacing = 2.dp,
+        columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         content = {
-            items(count = data.itemCount, key = { data[it]?.hashCode() ?: it }) { index ->
+            items(count = data.itemCount, key = data.itemKey { it.hashCode() }) { index ->
                 data[index]?.let { RandomPicsGridCard(item = it, onItemClick = onItemClick) }
             }
             if (data.loadState.append == LoadState.Loading) {
@@ -159,13 +165,19 @@ private fun RandomPicsGridCard(
         GlideImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
-            imageModel = { item.url },
+                .height(255.dp),
+            imageModel = {
+                item.url
+            },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop
             ),
             failure = {
                 ErrorView(animationResId = R.raw.space_404)
+            },
+            requestOptions = {
+                RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             }
         )
     }

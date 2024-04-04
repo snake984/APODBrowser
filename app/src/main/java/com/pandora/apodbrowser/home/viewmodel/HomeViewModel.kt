@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ class HomeViewModel(
         .flow
         .map { it.map { it.toItem() } }
         .cachedIn(viewModelScope)
+        .flowOn(Dispatchers.IO)
 
     private val _latestPicsOfTheDay = MutableStateFlow<List<PicOfTheDayItem>>(emptyList())
     val latestPicsOfTheDay: StateFlow<List<PicOfTheDayItem>> = _latestPicsOfTheDay
