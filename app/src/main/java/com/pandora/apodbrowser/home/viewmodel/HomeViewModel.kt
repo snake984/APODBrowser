@@ -9,7 +9,6 @@ import com.pandora.apodbrowser.ui.model.toItem
 import com.pandora.domain.errors.mapToError
 import com.pandora.domain.usecases.FetchPaginatedPicsUsecase
 import com.pandora.domain.usecases.FetchPicsUsecase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,17 +21,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
+import kotlin.coroutines.CoroutineContext
 
 class HomeViewModel(
     private val fetchPicsUsecase: FetchPicsUsecase,
-    fetchPaginatedPicsUsecase: FetchPaginatedPicsUsecase
+    fetchPaginatedPicsUsecase: FetchPaginatedPicsUsecase,
+    private val backgroundCoroutineContext: CoroutineContext
 ) : ViewModel() {
 
     val pagedRandomPics = fetchPaginatedPicsUsecase.getPager()
         .flow
         .map { it.map { it.toItem() } }
         .cachedIn(viewModelScope)
-        .flowOn(Dispatchers.IO)
+        .flowOn(backgroundCoroutineContext)
 
     private val _latestPicsOfTheDay = MutableStateFlow<List<PicOfTheDayItem>>(emptyList())
     val latestPicsOfTheDay: StateFlow<List<PicOfTheDayItem>> = _latestPicsOfTheDay
@@ -59,7 +60,7 @@ class HomeViewModel(
     val error: StateFlow<Throwable?> = _error
 
     fun fetchLatestPicsOfTheDay() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(backgroundCoroutineContext) {
             fetchPicsUsecase.getPicsOfTheDay(
                 startDate = ZonedDateTime.now().minusDays(7),
                 endDate = ZonedDateTime.now()
