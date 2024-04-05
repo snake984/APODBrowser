@@ -1,6 +1,7 @@
 package com.pandora.apodbrowser.picturedetail.di
 
 import com.pandora.apodbrowser.di.AppModule
+import com.pandora.apodbrowser.di.ScreenScope
 import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModelFactory
 import com.pandora.domain.usecases.IsPictureFavoriteUsecase
 import com.pandora.domain.usecases.RemovePicFromFavoriteUsecase
@@ -14,6 +15,7 @@ import kotlin.coroutines.CoroutineContext
 object PictureDetailModule {
 
     @Provides
+    @ScreenScope
     fun providePictureDetailViewModelFactory(
         isPictureFavoriteUsecase: IsPictureFavoriteUsecase,
         saveFavoritePicUsecase: SaveFavoritePicUsecase,
