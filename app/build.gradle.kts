@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     kotlin("kapt")
+    id("de.mannodermaus.android-junit5")
 }
 
 android {
@@ -17,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -80,7 +82,18 @@ dependencies {
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 
-    testImplementation(libs.junit)
+    testImplementation(libs.junit5)
+    testRuntimeOnly(libs.junit5.engine)
+    testImplementation(libs.junit5.params)
+    testImplementation(libs.assertj)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    androidTestImplementation(libs.junit5.android.compose)
+    androidTestImplementation(libs.assertj)
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+
+    androidTestImplementation("de.mannodermaus.junit5:android-test-core:1.3.0")
+    androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:1.2.2")
 }

@@ -26,7 +26,9 @@ dagger = "2.50"
 hilt = "2.48"
 hilt-navigation-compose = "1.2.0"
 junit = "4.13.2"
-kotest = "5.5.4"
+junit5 = "5.10.0"
+junit5-compose = "1.4.0"
+assertj = "3.25.1"
 kotlin = "1.9.22"
 ksp = "1.9.22-1.0.17"
 kotlinx-serialization-json = "1.6.2"
@@ -44,6 +46,7 @@ glide-compose = "1.0.0-beta01"
 landscapist = "2.3.2"
 lottie-compose = "6.4.0"
 secrets = "2.0.1"
+junitKtx = "1.1.5"
 
 [libraries]
 androidx-activity-compose-v170 = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -66,10 +69,13 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
+junit5 = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
+junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
+junit5-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
+junit5-android-compose = { module = "de.mannodermaus.junit5:android-test-compose", version.ref = "junit5-compose" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 androidx-test-junit4 = { module = "androidx.test.ext:junit", version.ref = "text-ext" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "test-rules" }
-androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
-androidx-test-espresso-idling-resource = { module = "androidx.test.espresso:espresso-idling-resource", version.ref = "espresso" }
 
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
 androidx-compose-material = { module = "androidx.compose.material3:material3" }
@@ -78,7 +84,6 @@ androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-constraint-layout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "compose-constraint-layout" }
 
@@ -90,10 +95,6 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-
-kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
@@ -122,12 +123,12 @@ glide = { module = "com.github.bumptech.glide:glide", name = "glide", version.re
 glide-compose = { module = "com.github.bumptech.glide:compose", name = "glide-compose", version.ref = "glide-compose" }
 
 landscapist-glide = { module = "com.github.skydoves:landscapist-glide", name = "landscapist-glide", version.ref = "landscapist" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 
 
 [bundles]
 # Define bundles/groups of libraries
 room = ["androidx-room-ktx", "androidx-room-runtime"]
-kotest = ["kotest-runner-junit5", "kotest-assertions-core", "kotest-property"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 
 [plugins]
