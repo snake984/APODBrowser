@@ -24,7 +24,7 @@ import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
 import com.pandora.apodbrowser.ui.ErrorView
-import com.pandora.apodbrowser.ui.LatestCollectionsRow
+import com.pandora.apodbrowser.ui.LatestCollectionRow
 import com.pandora.apodbrowser.ui.LoadingView
 import com.pandora.apodbrowser.ui.RandomPicsGrid
 import com.pandora.apodbrowser.ui.SearchBar
@@ -91,7 +91,7 @@ fun HomeContent(
                 )
             } else {
                 HomeSection(title = R.string.latest_pics) {
-                    LatestCollectionsRow(data = latestPics, onItemClick = onItemClick)
+                    LatestCollectionRow(data = latestPics, onItemClick = onItemClick)
                 }
                 HomeSection(title = R.string.random_pictures) {
                     RandomPicsGrid(dataFlow = homeViewModel.pagedRandomPics, onItemClick = onItemClick)

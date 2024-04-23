@@ -89,11 +89,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    androidTestImplementation(libs.junit5)
     androidTestImplementation(libs.junit5.android.compose)
     androidTestImplementation(libs.assertj)
-    androidTestImplementation("androidx.test:runner:1.5.2")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    androidTestImplementation(libs.androidx.test.runner)
 
-    androidTestImplementation("de.mannodermaus.junit5:android-test-core:1.3.0")
-    androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:1.2.2")
+    androidTestImplementation(libs.junit5.android.test.core)
+    androidTestRuntimeOnly(libs.junit5.android.test.runner)
+    androidTestImplementation(libs.androidx.paging.test)
 }
