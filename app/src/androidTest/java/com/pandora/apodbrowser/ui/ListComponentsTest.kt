@@ -56,7 +56,7 @@ class ListComponentsTest {
     private var isOnItemClickedCalled = false
 
     @Test
-    @DisplayName("Given a provided click listener, When clicking on the card, Then it should call the listener")
+    @DisplayName("Given a provided click listener, When clicking on LatestCollectionCard, Then it should call the listener")
     fun latestCollectionCardShouldCallOnItemClickWhenClicked() {
         extension.use {
             setContent {
@@ -106,7 +106,7 @@ class ListComponentsTest {
     }
 
     @Test
-    @DisplayName("Given a provided click listener, When clicking on the card, Then it should call the listener")
+    @DisplayName("Given a provided click listener, When clicking on the RandomPicsGridCard, Then it should call the listener")
     fun randomPicsGridCardShouldCallOnItemClickWhenClicked() {
         extension.use {
             setContent {
@@ -154,6 +154,21 @@ class ListComponentsTest {
             parentNode.performScrollToIndex(2)
             parentNode.onChildAt(2).assertExists()
 
+        }
+    }
+
+    @Test
+    @DisplayName("Given a provided click listener, When clicking on the FullWidthPictureItem, Then it should call the listener")
+    fun fullWidthPictureItemShouldCallOnItemClickWhenClicked() {
+        extension.use {
+            setContent {
+                FullWidthPictureItem(item = picOfTheDayItem) {
+                    isOnItemClickedCalled = true
+                }
+            }
+
+            onNode(hasClickAction()).performClick()
+            assertThat(isOnItemClickedCalled).isTrue()
         }
     }
 }

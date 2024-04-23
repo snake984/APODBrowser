@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun FullWidthPictureItem(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     item: PicOfTheDayItem,
     onItemClick: (PicOfTheDayItem) -> Unit
 ) {
