@@ -9,4 +9,6 @@
     <string name="back">Back</string>
     <string name="no_explanation_found">No explanation found</string>
     <string name="add_to_favorites">Add to favorites</string>
+    <string name="latest_collection_row_label">Latest pictures of the day</string>
+    <string name="pic_loading_failed">Unable to load picture</string>
 </resources>

@@ -22,8 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -140,20 +142,12 @@ fun RandomPicsGrid(
             items(count = data.itemCount, key = data.itemKey { it.hashCode() }) { index ->
                 data[index]?.let { RandomPicsGridCard(item = it, onItemClick = onItemClick) }
             }
-            if (data.loadState.append == LoadState.Loading) {
-                item {
-                    LoadingView(
-                        modifier = Modifier.size(56.dp),
-                        animationResId = R.raw.loading_small
-                    )
-                }
-            }
         },
     )
 }
 
 @Composable
-private fun RandomPicsGridCard(
+internal fun RandomPicsGridCard(
     modifier: Modifier = Modifier,
     item: PicOfTheDayItem,
     onItemClick: (PicOfTheDayItem) -> Unit
@@ -172,8 +166,14 @@ private fun RandomPicsGridCard(
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop
             ),
+            loading = {
+                LoadingView(
+                    modifier = Modifier.size(56.dp),
+                    animationResId = R.raw.loading_small
+                )
+            },
             failure = {
-                ErrorView(animationResId = R.raw.space_404)
+                Text(text = stringResource(id = R.string.pic_loading_failed))
             },
             requestOptions = {
                 RequestOptions()
@@ -184,20 +184,23 @@ private fun RandomPicsGridCard(
 }
 
 @Composable
-fun LatestCollectionsRow(
+fun LatestCollectionRow(
     modifier: Modifier = Modifier,
     data: List<PicOfTheDayItem>,
-    onItemClick: (PicOfTheDayItem) -> Unit
+    onItemClick: (PicOfTheDayItem) -> Unit,
 ) {
+    val rowContentDescription = stringResource(R.string.latest_collection_row_label)
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = modifier
+        modifier = modifier.semantics {
+            contentDescription = rowContentDescription
+        }
     ) {
-        items(items = data, key = { it.url }) { item ->
+        items(items = data, key = { it.hashCode() }) { item ->
             LatestCollectionCard(
                 picture = item,
-                modifier = modifier.size(256.dp, 144.dp),
+                modifier = Modifier.size(256.dp, 144.dp),
                 onItemClick = onItemClick
             )
         }
