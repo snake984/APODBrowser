@@ -1,14 +1,16 @@
 package com.pandora.apodbrowser.di
 
 import android.content.Context
+import com.pandora.apodbrowser.favorites.di.FavoritesComponent
 import com.pandora.apodbrowser.home.di.HomeComponent
+import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
-@Module(subcomponents = [HomeComponent::class])
+@Module(subcomponents = [HomeComponent::class, PictureDetailComponent::class, FavoritesComponent::class])
 class AppModule(private val applicationContext: Context) {
 
     @Provides

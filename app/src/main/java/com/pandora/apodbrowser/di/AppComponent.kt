@@ -1,6 +1,7 @@
 package com.pandora.apodbrowser.di
 
 import com.pandora.api.di.ApiModule
+import com.pandora.apodbrowser.favorites.di.FavoritesComponent
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import com.pandora.domain.di.DomainModule
@@ -14,4 +15,5 @@ import javax.inject.Singleton
 interface AppComponent {
     fun homeComponentFactory(): HomeComponent.Factory
     fun pictureDetailComponentFactory(): PictureDetailComponent.Factory
+    fun favoritesComponentFactory(): FavoritesComponent.Factory
 }

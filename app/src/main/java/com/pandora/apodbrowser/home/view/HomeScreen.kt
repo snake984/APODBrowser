@@ -26,7 +26,7 @@ import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
 import com.pandora.apodbrowser.ui.ErrorView
 import com.pandora.apodbrowser.ui.LatestCollectionRow
 import com.pandora.apodbrowser.ui.LoadingView
-import com.pandora.apodbrowser.ui.RandomPicsGrid
+import com.pandora.apodbrowser.ui.PagedPicsGrid
 import com.pandora.apodbrowser.ui.SearchBar
 import com.pandora.apodbrowser.ui.SearchResultsView
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
@@ -94,7 +94,7 @@ fun HomeContent(
                     LatestCollectionRow(data = latestPics, onItemClick = onItemClick)
                 }
                 HomeSection(title = R.string.random_pictures) {
-                    RandomPicsGrid(dataFlow = homeViewModel.pagedRandomPics, onItemClick = onItemClick)
+                    PagedPicsGrid(dataFlow = homeViewModel.pagedRandomPics, onItemClick = onItemClick)
                 }
             }
         } else if (error != null) {

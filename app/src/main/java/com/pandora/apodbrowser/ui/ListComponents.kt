@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -79,7 +80,7 @@ fun LatestCollectionCard(
 }
 
 @Composable
-fun RandomPicsGrid(
+fun PagedPicsGrid(
     modifier: Modifier = Modifier,
     dataFlow: Flow<PagingData<PicOfTheDayItem>>,
     onItemClick: (PicOfTheDayItem) -> Unit
@@ -93,14 +94,33 @@ fun RandomPicsGrid(
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         content = {
             items(count = data.itemCount, key = data.itemKey { it.hashCode() }) { index ->
-                data[index]?.let { RandomPicsGridCard(item = it, onItemClick = onItemClick) }
+                data[index]?.let { SimplePicsGridCard(item = it, onItemClick = onItemClick) }
             }
         },
     )
 }
 
 @Composable
-internal fun RandomPicsGridCard(
+fun SimplePicsGrid(
+    modifier: Modifier = Modifier,
+    data: List<PicOfTheDayItem>,
+    onItemClick: (PicOfTheDayItem) -> Unit
+) {
+    LazyVerticalGrid(
+        modifier = modifier.fillMaxSize(),
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        content = {
+            items(items = data, key = { it.hashCode()}) { picture ->
+                SimplePicsGridCard(item = picture, onItemClick = onItemClick)
+            }
+        },
+    )
+}
+
+@Composable
+internal fun SimplePicsGridCard(
     modifier: Modifier = Modifier,
     item: PicOfTheDayItem,
     onItemClick: (PicOfTheDayItem) -> Unit

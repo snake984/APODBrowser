@@ -110,7 +110,7 @@ class ListComponentsTest {
     fun randomPicsGridCardShouldCallOnItemClickWhenClicked() {
         extension.use {
             setContent {
-                RandomPicsGridCard(item = picOfTheDayItem) {
+                SimplePicsGridCard(item = picOfTheDayItem) {
                     isOnItemClickedCalled = true
                 }
             }
@@ -125,7 +125,7 @@ class ListComponentsTest {
     fun randomPicsGridCardShouldBeTheRightHeight() {
         extension.use {
             setContent {
-                RandomPicsGridCard(item = picOfTheDayItem) {}
+                SimplePicsGridCard(item = picOfTheDayItem) {}
             }
 
             onNode(hasClickAction()).assertHeightIsEqualTo(255.dp)
@@ -145,7 +145,7 @@ class ListComponentsTest {
         extension.use {
             setContent {
                 val dataFlow = fakePager.flow.map { it.map { it.toItem() } }
-                RandomPicsGrid(modifier = Modifier.testTag(testTag), dataFlow = dataFlow) {}
+                PagedPicsGrid(modifier = Modifier.testTag(testTag), dataFlow = dataFlow) {}
             }
             val parentNode = onNodeWithTag(testTag)
             parentNode.onChildAt(0).assertExists()

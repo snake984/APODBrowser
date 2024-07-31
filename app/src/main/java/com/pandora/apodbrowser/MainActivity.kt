@@ -20,8 +20,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pandora.apodbrowser.di.favoritesComponent
 import com.pandora.apodbrowser.di.homeComponent
 import com.pandora.apodbrowser.di.pictureDetailComponent
+import com.pandora.apodbrowser.favorites.di.FavoritesComponent
+import com.pandora.apodbrowser.favorites.view.FavoritesScreen
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.view.HomeScreen
 import com.pandora.apodbrowser.navigation.NavigationRoute
@@ -40,7 +43,8 @@ class MainActivity : FragmentActivity() {
             APODBrowserTheme {
                 APODBrowserAppPortrait(
                     homeComponent = homeComponent(),
-                    pictureDetailComponent = pictureDetailComponent()
+                    pictureDetailComponent = pictureDetailComponent(),
+                    favoritesComponent = favoritesComponent()
                 )
             }
         }
@@ -85,7 +89,8 @@ private fun APODBrowserBottomNavigation(
             },
             selected = false,
             onClick = {
-                //TODO - Navigate to "favorites"
+                if (navController.currentDestination?.route != NavigationRoute.Favorites.destinationId)
+                    navController.navigate(NavigationRoute.Favorites.destinationId)
             }
         )
     }
@@ -94,7 +99,8 @@ private fun APODBrowserBottomNavigation(
 @Composable
 fun APODBrowserAppPortrait(
     homeComponent: HomeComponent,
-    pictureDetailComponent: PictureDetailComponent
+    pictureDetailComponent: PictureDetailComponent,
+    favoritesComponent: FavoritesComponent,
 ) {
     APODBrowserTheme {
         val navController = rememberNavController()
@@ -129,6 +135,9 @@ fun APODBrowserAppPortrait(
                     } ?: run {
                         //TODO - SHow error view
                     }
+                }
+                composable(route = NavigationRoute.Favorites.destinationId) {
+                    FavoritesScreen(diComponent = favoritesComponent)
                 }
             }
         }
