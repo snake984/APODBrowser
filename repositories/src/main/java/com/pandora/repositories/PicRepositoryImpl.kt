@@ -57,15 +57,15 @@ internal class PicRepositoryImpl(
 
     override fun getFavorites(): Flow<List<FavoritePic>> =
         favoritePicsDao.getAll().map {
-            it.map {
+            it.map { dbPic ->
                 FavoritePic(
-                    title = it.title,
-                    date = it.date,
-                    url = it.url,
-                    hdUrl = it.hdUrl,
-                    explanation = it.explanation,
-                    imagePath = it.filename,
-                    copyright = it.copyright,
+                    title = dbPic.title,
+                    date = dbPic.date,
+                    url = dbPic.url,
+                    hdUrl = dbPic.hdUrl,
+                    explanation = dbPic.explanation,
+                    imageUri = dbPic.uri,
+                    copyright = dbPic.copyright,
                 )
             }
         }
@@ -74,7 +74,7 @@ internal class PicRepositoryImpl(
         val url = favorite.hdUrl ?: favorite.url
         val filename = url.split("/").last()
         val downloadedImage = requester.fileDownloader.downloadFile(url)
-        fileManager.saveImage(downloadedImage, filename)
+        val uri = fileManager.saveImage(downloadedImage, filename)
         favoritePicsDao.insertAll(
             listOf(
                 FavoritePicEntity(
@@ -84,16 +84,18 @@ internal class PicRepositoryImpl(
                     hdUrl = favorite.hdUrl,
                     explanation = favorite.explanation,
                     copyright = favorite.copyright,
-                    filename = filename
+                    uri = uri
                 )
             )
         )
     }
 
     override suspend fun removePicFromFavorite(favorite: PicOfTheDay) {
-        val url = favorite.hdUrl ?: favorite.url
-        val filename = url.split("/").last()
-        fileManager.deleteImage(filename)
+        val entity = favoritePicsDao.getByDate(favorite.date)
+        val uri = entity?.uri
+        if (uri != null) {
+            fileManager.deleteImage(uri)
+        }
         favoritePicsDao.deleteByDate(favorite.date)
     }
 }

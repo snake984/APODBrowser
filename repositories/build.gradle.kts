@@ -1,15 +1,14 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.pandora.repositories"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 26
+        minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -25,11 +24,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_4
     }
 }
 
@@ -42,6 +44,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     testImplementation(libs.junit)
 }

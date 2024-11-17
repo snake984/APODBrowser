@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -35,23 +35,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         compose = true
         viewBinding = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_4
     }
 }
 
@@ -80,7 +80,7 @@ dependencies {
     implementation(libs.landscapist.glide)
     implementation(libs.lottie.compose)
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     testImplementation(libs.junit5)
     testRuntimeOnly(libs.junit5.engine)

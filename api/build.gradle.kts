@@ -2,8 +2,7 @@ import org.gradle.kotlin.dsl.libs
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
@@ -30,11 +29,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_4
     }
 }
 
@@ -42,6 +44,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson.converter)
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     testImplementation(libs.junit)
 }

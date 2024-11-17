@@ -10,7 +10,7 @@ data class FavoritePicEntity(
     val date: String,
     val url: String,
     val hdUrl: String? = null,
-    val filename: String? = null,
+    val uri: String? = null,
     val explanation: String? = null,
     val copyright: String? = null,
 )

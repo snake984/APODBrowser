@@ -27,7 +27,16 @@ class FavoritesViewModel(
     fun fetchFavorites() {
         viewModelScope.launch(backgroundCoroutineContext) {
             fetchFavoritePicsUsecase.fetchFavoritePics().collectLatest {
-                _favorites.value = it.
+                _favorites.value = it.map {
+                    PicOfTheDayItem(
+                        title = it.title,
+                        date = it.date,
+                        url = it.url,
+                        explanation = it.explanation,
+                        hdUrl = it.hdUrl,
+                        copyright = it.copyright
+                    )
+                }
             }
         }
     }

@@ -6,6 +6,6 @@ data class FavoritePic(
     val url: String,
     val explanation: String? = null,
     val hdUrl: String? = null,
-    val imagePath: String? = null,
+    val imageUri: String? = null,
     val copyright: String? = null,
 )

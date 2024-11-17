@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
+import com.pandora.apodbrowser.ui.theme.icons.ic_clear
+import com.pandora.apodbrowser.ui.theme.icons.ic_search
 
 @Composable
 fun SearchResultsView(
@@ -66,14 +65,14 @@ fun SearchBar(
                         text.value = ""
                         onValueChange(text.value)
                     },
-                    imageVector = Icons.Default.Clear,
+                    imageVector = ic_clear,
                     contentDescription = null
                 )
             }
         },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search, contentDescription = null
+                imageVector = ic_search, contentDescription = null
             )
         }, colors = TextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.colorScheme.surface,

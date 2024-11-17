@@ -102,9 +102,9 @@ fun PagedPicsGrid(
 
 @Composable
 fun SimplePicsGrid(
-    modifier: Modifier = Modifier,
     data: List<PicOfTheDayItem>,
-    onItemClick: (PicOfTheDayItem) -> Unit
+    modifier: Modifier = Modifier,
+    onItemClick: (PicOfTheDayItem) -> Unit = {}
 ) {
     LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),

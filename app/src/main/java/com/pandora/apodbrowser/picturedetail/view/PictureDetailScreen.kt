@@ -16,11 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,7 +45,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.pandora.apodbrowser.LocalNavController
+import com.pandora.apodbrowser.LocalPermissionManager
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModel
@@ -59,6 +56,11 @@ import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModel.Pi
 import com.pandora.apodbrowser.ui.Fab
 import com.pandora.apodbrowser.ui.Toast
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
+import kotlinx.coroutines.launch
+import com.pandora.apodbrowser.ui.theme.icons.ic_arrow_back
+import com.pandora.apodbrowser.ui.theme.icons.ic_close
+import com.pandora.apodbrowser.ui.theme.icons.ic_favorite
+import com.pandora.apodbrowser.ui.theme.icons.ic_info
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import java.time.LocalDate
@@ -76,9 +78,10 @@ enum class ContainerState {
 fun PictureDetailScreen(
     modifier: Modifier = Modifier,
     diComponent: PictureDetailComponent,
-    navController: NavController,
-    pictureItem: PicOfTheDayItem
+    pictureItem: PicOfTheDayItem,
 ) {
+    val navController = LocalNavController.current
+
     val item by rememberSaveable {
         mutableStateOf(pictureItem)
     }
@@ -98,7 +101,7 @@ fun PictureDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.AutoMirrored.Default.ArrowBack, null)
+                        Icon(ic_arrow_back, null)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -140,8 +143,11 @@ private fun PictureDetailContent(
             pictureDetailViewModel.isPictureFavorite(item)
             var containerState by rememberSaveable { mutableStateOf(ContainerState.Fab) }
             val density = LocalDensity.current
+            val permissionManager = LocalPermissionManager.current
+            val coroutineScope = rememberCoroutineScope()
 
-            AnimatedVisibility(visible = containerState == ContainerState.Fab,
+            AnimatedVisibility(
+                visible = containerState == ContainerState.Fab,
                 enter = expandVertically() + slideInHorizontally {
                     with(density) { 600.dp.roundToPx() }
                 },
@@ -159,14 +165,18 @@ private fun PictureDetailContent(
                 Fab(
                     modifier = Modifier
                         .padding(end = 16.dp, bottom = 16.dp),
-                    icon = Icons.Filled.Favorite,
+                    icon = ic_favorite,
                     tintColor = iconColor,
                     contentDescription = R.string.add_to_favorites,
                     onClick = {
-                        if (favoriteState.value == IS_FAVORITE) {
-                            pictureDetailViewModel.removeFavorite(item)
-                        } else if (favoriteState.value == IS_NOT_FAVORITE) {
-                            pictureDetailViewModel.saveFavorite(item)
+                        coroutineScope.launch {
+                            if (favoriteState.value == IS_FAVORITE) {
+                                pictureDetailViewModel.removeFavorite(item)
+                            } else if (favoriteState.value == IS_NOT_FAVORITE) {
+                                if (permissionManager.requestWriteExternalStoragePermission()) {
+                                    pictureDetailViewModel.saveFavorite(item)
+                                }
+                            }
                         }
                     }
                 )
@@ -180,7 +190,7 @@ private fun PictureDetailContent(
                     ContainerState.Fab -> Fab(
                         modifier = Modifier
                             .padding(end = 16.dp, bottom = 16.dp),
-                        icon = Icons.Filled.Info,
+                        icon = ic_info,
                         contentDescription = R.string.show_explanation,
                         onClick = { containerState = ContainerState.Fullscreen }
                     )
@@ -218,7 +228,7 @@ fun ExplanationView(
                 onClick = { onBackPressed() }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
+                    imageVector = ic_close,
                     contentDescription = stringResource(R.string.back)
                 )
             }

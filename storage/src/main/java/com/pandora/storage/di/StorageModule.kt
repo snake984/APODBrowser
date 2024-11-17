@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.pandora.storage.database.APODBrowserDatabase
 import com.pandora.storage.database.dao.FavoritePicsDao
-import com.pandora.storage.filesystem.AppFileManager
 import com.pandora.storage.filesystem.FileManager
+import com.pandora.storage.filesystem.MediaStoreFileManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -19,7 +19,7 @@ object StorageModule {
             applicationContext,
             APODBrowserDatabase::class.java,
             "apod_browser_db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
 
     @Provides
     fun providePicOfTheDayDao(database: APODBrowserDatabase): FavoritePicsDao =
@@ -27,5 +27,5 @@ object StorageModule {
 
     @Provides
     fun provideAppFileManager(applicationContext: Context): FileManager =
-        AppFileManager(applicationContext.filesDir)
+        MediaStoreFileManager(applicationContext)
 }

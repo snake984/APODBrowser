@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -25,16 +24,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_4
+    }
+}
+
 dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 }

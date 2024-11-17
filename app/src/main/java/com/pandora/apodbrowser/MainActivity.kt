@@ -1,11 +1,9 @@
 package com.pandora.apodbrowser
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -13,9 +11,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,24 +27,32 @@ import com.pandora.apodbrowser.favorites.view.FavoritesScreen
 import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.view.HomeScreen
 import com.pandora.apodbrowser.navigation.NavigationRoute
-import com.pandora.apodbrowser.navigation.buildNavArguments
 import com.pandora.apodbrowser.navigation.navigate
+import com.pandora.apodbrowser.permissions.PermissionManager
+import com.pandora.apodbrowser.permissions.PermissionManagerImpl
 import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import com.pandora.apodbrowser.picturedetail.view.PictureDetailScreen
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
+import com.pandora.apodbrowser.ui.theme.icons.ic_favorite
+import com.pandora.apodbrowser.ui.theme.icons.ic_home
 
-class MainActivity : FragmentActivity() {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val permissionManager: PermissionManager =
+            PermissionManagerImpl(this)
+
         setContent {
             APODBrowserTheme {
-                APODBrowserAppPortrait(
-                    homeComponent = homeComponent(),
-                    pictureDetailComponent = pictureDetailComponent(),
-                    favoritesComponent = favoritesComponent()
-                )
+                CompositionLocalProvider(LocalPermissionManager provides permissionManager) {
+                    APODBrowserAppPortrait(
+                        homeComponent = homeComponent(),
+                        pictureDetailComponent = pictureDetailComponent(),
+                        favoritesComponent = favoritesComponent()
+                    )
+                }
             }
         }
     }
@@ -55,8 +62,9 @@ class MainActivity : FragmentActivity() {
 @Composable
 private fun APODBrowserBottomNavigation(
     modifier: Modifier = Modifier,
-    navController: NavController,
 ) {
+    val navController = LocalNavController.current
+
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
@@ -64,7 +72,7 @@ private fun APODBrowserBottomNavigation(
         NavigationBarItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Home,
+                    imageVector = ic_home,
                     contentDescription = null
                 )
             },
@@ -80,7 +88,7 @@ private fun APODBrowserBottomNavigation(
         NavigationBarItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Favorite,
+                    imageVector = ic_favorite,
                     contentDescription = null
                 )
             },
@@ -105,41 +113,49 @@ fun APODBrowserAppPortrait(
     APODBrowserTheme {
         val navController = rememberNavController()
 
-        Scaffold(
-            bottomBar = {
-                APODBrowserBottomNavigation(navController = navController)
-            }
-        ) { padding ->
-            NavHost(
-                navController = navController,
-                startDestination = "home",
-                modifier = Modifier.padding(padding)
-            ) {
-                composable(route = NavigationRoute.Home.destinationId) {
-                    HomeScreen(diComponent = homeComponent) {
-                        navController.navigate(NavigationRoute.PictureDetail, it)
-                    }
+        CompositionLocalProvider(LocalNavController provides navController) {
+            Scaffold(
+                bottomBar = {
+                    APODBrowserBottomNavigation()
                 }
-                composable(
-                    route = NavigationRoute.PictureDetail.destinationId,
-                    arguments = buildNavArguments<PicOfTheDayItem>(NavigationRoute.PictureDetail.argsName())
+            ) { padding ->
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "home",
+                    modifier = Modifier.padding(padding)
                 ) {
-                    val item =
-                        it.arguments?.getParcelable<PicOfTheDayItem>(NavigationRoute.PictureDetail.argsName())
-                    item?.let {
-                        PictureDetailScreen(
-                            diComponent = pictureDetailComponent,
-                            navController = navController,
-                            pictureItem = it
-                        )
-                    } ?: run {
-                        //TODO - SHow error view
+                    composable(route = NavigationRoute.Home.destinationId) {
+                        HomeScreen(diComponent = homeComponent) {
+                            navController.navigate(NavigationRoute.PictureDetail, it)
+                        }
                     }
-                }
-                composable(route = NavigationRoute.Favorites.destinationId) {
-                    FavoritesScreen(diComponent = favoritesComponent)
+                    composable(
+                        route = NavigationRoute.PictureDetail.destinationId
+                    ) {
+                        val item =
+                            navController.previousBackStackEntry?.savedStateHandle?.get<PicOfTheDayItem>(
+                                NavigationRoute.PictureDetail.argsName()
+                            )
+                        item?.let {
+                            PictureDetailScreen(
+                                diComponent = pictureDetailComponent,
+                                pictureItem = it
+                            )
+                        } ?: run {
+                            //TODO - SHow error view
+                        }
+                    }
+                    composable(route = NavigationRoute.Favorites.destinationId) {
+                        FavoritesScreen(diComponent = favoritesComponent) {
+                            navController.navigate(NavigationRoute.PictureDetail, it)
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+val LocalNavController = compositionLocalOf<NavController> { error("No NavController found!") }
+val LocalPermissionManager = compositionLocalOf<PermissionManager> { error("No activity found!") }

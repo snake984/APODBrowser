@@ -21,6 +21,9 @@ interface FavoritePicsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pics: List<FavoritePicEntity>)
 
+    @Query("SELECT * FROM favorite_pics WHERE date LIKE :picDate")
+    suspend fun getByDate(picDate: String): FavoritePicEntity?
+
     @Query("DELETE FROM favorite_pics WHERE date LIKE :picDate")
     suspend fun deleteByDate(picDate: String)
 }

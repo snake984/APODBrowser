@@ -1,7 +1,5 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
     alias(libs.plugins.kotlin.ksp)
 }
 
@@ -26,11 +24,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_4
     }
 }
 
@@ -38,12 +39,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
-}
-
-kapt {
-    correctErrorTypes = true
 }
