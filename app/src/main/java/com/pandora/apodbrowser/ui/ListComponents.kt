@@ -193,7 +193,7 @@ fun LatestCollectionRow(
 }
 
 @Composable
-fun HeroPictureCard(
+fun TodayPictureCard(
     item: PicOfTheDayItem,
     modifier: Modifier = Modifier,
     onItemClick: (PicOfTheDayItem) -> Unit

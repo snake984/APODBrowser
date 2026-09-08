@@ -53,26 +53,28 @@ fun FavoritesContent(
 
     LazyColumn(
         modifier = modifier.background(MaterialTheme.colorScheme.background).fillMaxSize(),
-        contentPadding = PaddingValues(20.dp),
+        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
         Text(
-            text = "Your collection",
+            text = stringResource(R.string.favorites_collection_title),
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 16.dp)
         )
         }
         item {
             Text(
-                text = "The skies you want to remember",
+                text = stringResource(R.string.favorites_collection_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         item {
             Text(
-                text = "All    Nebulae    Planets",
+                text = stringResource(R.string.favorites_filter_all) +
+                    "    " + stringResource(R.string.favorites_filter_nebulae) +
+                    "    " + stringResource(R.string.favorites_filter_planets),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelLarge
             )

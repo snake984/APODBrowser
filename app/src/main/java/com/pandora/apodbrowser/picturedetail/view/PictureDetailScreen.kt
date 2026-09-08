@@ -145,7 +145,7 @@ private fun PictureDetailContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1.12f)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(24.dp)),
             imageModel = { item.hdUrl },
             imageOptions = ImageOptions(
@@ -153,12 +153,14 @@ private fun PictureDetailContent(
             ),
         )
         Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
         ) {
             Text(item.title, style = MaterialTheme.typography.headlineSmall)
             Text(
-                text = "${item.date}  •  ${item.copyright.orEmpty()}",
+                text = item.copyright?.takeIf { it.isNotBlank() }?.let {
+                    "${item.date}${stringResource(R.string.picture_detail_date_separator)}$it"
+                } ?: item.date,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -179,12 +181,12 @@ private fun PictureDetailContent(
                 }) {
                     Icon(ic_favorite, contentDescription = null)
                     androidx.compose.foundation.layout.Spacer(Modifier.size(8.dp))
-                    Text("Save")
+                    Text(stringResource(R.string.picture_detail_save))
                 }
                 TextButton(onClick = { explanationVisible = true }) {
                     Icon(ic_info, contentDescription = null)
                     androidx.compose.foundation.layout.Spacer(Modifier.size(8.dp))
-                    Text("About this image")
+                    Text(stringResource(R.string.picture_detail_about))
                 }
             }
         }

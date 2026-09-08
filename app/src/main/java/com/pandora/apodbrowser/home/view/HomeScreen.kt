@@ -27,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
 import com.pandora.apodbrowser.ui.ErrorView
-import com.pandora.apodbrowser.ui.HeroPictureCard
+import com.pandora.apodbrowser.ui.TodayPictureCard
 import com.pandora.apodbrowser.ui.LoadingView
 import com.pandora.apodbrowser.ui.SearchBar
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
@@ -82,37 +82,37 @@ fun HomeContent(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Good evening, stargazer",
+                    text = stringResource(R.string.home_greeting),
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = "Discover something beautiful",
+                    text = stringResource(R.string.home_greeting_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(16.dp))
         SearchBar(modifier.padding(horizontal = 16.dp)) {
             homeViewModel.updateSearchResults(it)
         }
         }
         if (searchInput.isNotEmpty()) {
             items(searchResults) { picture ->
-                HeroPictureCard(picture, Modifier.padding(horizontal = 20.dp), onItemClick)
+                TodayPictureCard(picture, Modifier.padding(horizontal = 16.dp), onItemClick)
             }
         } else if (latestPics.isNotEmpty() && error == null) {
             item {
-                Text("Today in space", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 20.dp))
+                Text(stringResource(R.string.home_today_in_space), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 16.dp))
             }
             item {
-                HeroPictureCard(latestPics.first(), Modifier.padding(horizontal = 20.dp), onItemClick)
+                TodayPictureCard(latestPics.first(), Modifier.padding(horizontal = 16.dp), onItemClick)
             }
             item {
-                Text("More to explore", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 20.dp))
+                Text(stringResource(R.string.home_more_to_explore), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 16.dp))
             }
             items(latestPics.drop(1)) { picture ->
-                HeroPictureCard(picture, Modifier.padding(horizontal = 20.dp), onItemClick)
+                TodayPictureCard(picture, Modifier.padding(horizontal = 16.dp), onItemClick)
             }
         } else if (error != null) {
             item { ErrorView(animationResId = R.raw.lost_connection) }
