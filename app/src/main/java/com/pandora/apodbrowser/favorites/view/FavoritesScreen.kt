@@ -55,10 +55,10 @@ fun FavoritesContent(
     ) {
         Text(
             text = stringResource(R.string.favorites_screen_title),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+                .paddingFromBaseline(top = 28.dp, bottom = 16.dp)
         )
         SimplePicsGrid(data = favoritePics, onItemClick = onItemClick)
     }

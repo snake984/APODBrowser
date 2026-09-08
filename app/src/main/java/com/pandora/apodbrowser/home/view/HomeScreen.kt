@@ -2,8 +2,10 @@ package com.pandora.apodbrowser.home.view
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
@@ -62,11 +64,29 @@ fun HomeContent(
 ) {
     Column(
         modifier = modifier
-            .padding(top = 16.dp)
+            .padding(top = 24.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Good evening, stargazer",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = "Discover something beautiful",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        Spacer(Modifier.height(20.dp))
         SearchBar(modifier.padding(horizontal = 16.dp)) {
             homeViewModel.updateSearchResults(it)
         }
@@ -112,10 +132,10 @@ fun HomeSection(
     Column(modifier) {
         Text(
             text = stringResource(title),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+                .paddingFromBaseline(top = 28.dp, bottom = 14.dp)
         )
         content()
     }

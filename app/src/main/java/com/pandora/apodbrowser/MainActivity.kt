@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pandora.apodbrowser.favorites.view.FavoritesScreen
 import com.pandora.apodbrowser.home.view.HomeScreen
 import com.pandora.apodbrowser.navigation.NavigationRoute
@@ -55,6 +56,7 @@ private fun APODBrowserBottomNavigation(
     modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -70,7 +72,7 @@ private fun APODBrowserBottomNavigation(
             label = {
                 Text(stringResource(R.string.bottom_navigation_home))
             },
-            selected = true,
+            selected = currentRoute == NavigationRoute.Home.destinationId,
             onClick = {
                 if (navController.currentDestination?.route != NavigationRoute.Home.destinationId)
                     navController.navigate(NavigationRoute.Home.destinationId)
@@ -86,7 +88,7 @@ private fun APODBrowserBottomNavigation(
             label = {
                 Text(stringResource(R.string.bottom_navigation_favorites))
             },
-            selected = false,
+            selected = currentRoute == NavigationRoute.Favorites.destinationId,
             onClick = {
                 if (navController.currentDestination?.route != NavigationRoute.Favorites.destinationId)
                     navController.navigate(NavigationRoute.Favorites.destinationId)

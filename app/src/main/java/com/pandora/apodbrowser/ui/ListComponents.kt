@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -42,9 +44,9 @@ fun FullWidthPictureItem(
     Surface(
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.clickable {
-            onItemClick(item)
-        }
+        modifier = modifier
+            .clickable { onItemClick(item) }
+            .clip(RoundedCornerShape(24.dp))
     ) {
         GlideImage(
             modifier = modifier.fillMaxWidth(),
@@ -65,9 +67,9 @@ fun LatestCollectionCard(
     Surface(
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.clickable {
-            onItemClick(picture)
-        }
+        modifier = modifier
+            .clickable { onItemClick(picture) }
+            .clip(RoundedCornerShape(22.dp))
     ) {
         GlideImage(
             modifier = modifier,
@@ -127,7 +129,9 @@ internal fun SimplePicsGridCard(
 ) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.clickable { onItemClick(item) }
+        modifier = modifier
+            .clickable { onItemClick(item) }
+            .clip(RoundedCornerShape(18.dp))
     ) {
         GlideImage(
             modifier = Modifier
