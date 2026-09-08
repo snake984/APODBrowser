@@ -12,4 +12,16 @@
     <string name="latest_collection_row_label">Latest pictures of the day</string>
     <string name="pic_loading_failed">Unable to load picture</string>
     <string name="favorites_screen_title">Your Favorites</string>
+    <string name="home_greeting">Good evening, stargazer</string>
+    <string name="home_greeting_subtitle">Discover something beautiful</string>
+    <string name="home_today_in_space">Today in space</string>
+    <string name="home_more_to_explore">More to explore</string>
+    <string name="favorites_collection_title">Your collection</string>
+    <string name="favorites_collection_subtitle">The skies you want to remember</string>
+    <string name="favorites_filter_all">All</string>
+    <string name="favorites_filter_nebulae">Nebulae</string>
+    <string name="favorites_filter_planets">Planets</string>
+    <string name="picture_detail_date_separator"> • </string>
+    <string name="picture_detail_save">Save</string>
+    <string name="picture_detail_about">About this image</string>
 </resources>

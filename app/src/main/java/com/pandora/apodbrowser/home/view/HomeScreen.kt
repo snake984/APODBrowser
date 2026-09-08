@@ -2,11 +2,16 @@ package com.pandora.apodbrowser.home.view
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,11 +27,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
 import com.pandora.apodbrowser.ui.ErrorView
-import com.pandora.apodbrowser.ui.LatestCollectionRow
+import com.pandora.apodbrowser.ui.TodayPictureCard
 import com.pandora.apodbrowser.ui.LoadingView
-import com.pandora.apodbrowser.ui.PagedPicsGrid
 import com.pandora.apodbrowser.ui.SearchBar
-import com.pandora.apodbrowser.ui.SearchResultsView
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.domain.errors.NetworkError
 import kotlinx.coroutines.launch
@@ -60,45 +63,61 @@ fun HomeContent(
     homeViewModel: HomeViewModel,
     onItemClick: (PicOfTheDayItem) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .padding(top = 16.dp)
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    val latestPics by homeViewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
+    val error by homeViewModel.error.collectAsStateWithLifecycle()
+    val searchResults by homeViewModel.searchResults.collectAsStateWithLifecycle()
+    val searchInput by homeViewModel.searchText.collectAsStateWithLifecycle()
 
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 24.dp, bottom = 28.dp),
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(20.dp)
+    ) {
+        item {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.home_greeting),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = stringResource(R.string.home_greeting_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
         SearchBar(modifier.padding(horizontal = 16.dp)) {
             homeViewModel.updateSearchResults(it)
         }
-        Spacer(Modifier.height(16.dp))
-
-        val latestPics by homeViewModel.latestPicsOfTheDay.collectAsStateWithLifecycle()
-        val error by homeViewModel.error.collectAsStateWithLifecycle()
-
-        if (latestPics.isNotEmpty() && error == null) {
-            val searchResults by homeViewModel.searchResults.collectAsStateWithLifecycle()
-            val searchInput by homeViewModel.searchText.collectAsStateWithLifecycle()
-
-            if (searchInput.isNotEmpty()) {
-                SearchResultsView(
-                    searchResults = searchResults,
-                    modifier = modifier,
-                    onItemClick = onItemClick
-                )
-            } else {
-                HomeSection(title = R.string.latest_pics) {
-                    LatestCollectionRow(data = latestPics, onItemClick = onItemClick)
-                }
-                HomeSection(title = R.string.random_pictures) {
-                    PagedPicsGrid(dataFlow = homeViewModel.pagedRandomPics, onItemClick = onItemClick)
-                }
+        }
+        if (searchInput.isNotEmpty()) {
+            items(searchResults) { picture ->
+                TodayPictureCard(picture, Modifier.padding(horizontal = 16.dp), onItemClick)
+            }
+        } else if (latestPics.isNotEmpty() && error == null) {
+            item {
+                Text(stringResource(R.string.home_today_in_space), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 16.dp))
+            }
+            item {
+                TodayPictureCard(latestPics.first(), Modifier.padding(horizontal = 16.dp), onItemClick)
+            }
+            item {
+                Text(stringResource(R.string.home_more_to_explore), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 16.dp))
+            }
+            items(latestPics.drop(1)) { picture ->
+                TodayPictureCard(picture, Modifier.padding(horizontal = 16.dp), onItemClick)
             }
         } else if (error != null) {
-            when (error) {
-                is NetworkError -> ErrorView(animationResId = R.raw.lost_connection)
-            }
+            item { ErrorView(animationResId = R.raw.lost_connection) }
         } else {
-            LoadingView(animationResId = R.raw.loading_big)
+            item { LoadingView(animationResId = R.raw.loading_big) }
         }
     }
 }
@@ -112,10 +131,10 @@ fun HomeSection(
     Column(modifier) {
         Text(
             text = stringResource(title),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+                .paddingFromBaseline(top = 28.dp, bottom = 14.dp)
         )
         content()
     }

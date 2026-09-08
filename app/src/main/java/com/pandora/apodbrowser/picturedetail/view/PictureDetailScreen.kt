@@ -10,12 +10,18 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -118,82 +124,69 @@ private fun PictureDetailContent(
     item: PicOfTheDayItem,
     pictureDetailViewModel: PictureDetailViewModel,
 ) {
-    Box(
-        modifier = Modifier
+    val favoriteState = pictureDetailViewModel.favoriteState.collectAsStateWithLifecycle()
+    pictureDetailViewModel.isPictureFavorite(item)
+    val permissionManager = LocalPermissionManager.current
+    val coroutineScope = rememberCoroutineScope()
+    var explanationVisible by rememberSaveable { mutableStateOf(false) }
+
+    if (explanationVisible) {
+        ExplanationView(item = item, onBackPressed = { explanationVisible = false })
+        return
+    }
+
+    Column(
+        modifier = modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .padding(top = padding.calculateTopPadding()),
+            .verticalScroll(rememberScrollState())
+            .padding(top = padding.calculateTopPadding(), bottom = 32.dp)
     ) {
         GlideImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.12f)
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(24.dp)),
             imageModel = { item.hdUrl },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop
             ),
         )
-
         Column(
-            modifier = modifier.align(Alignment.BottomEnd),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
         ) {
-            val favoriteState = pictureDetailViewModel.favoriteState.collectAsStateWithLifecycle()
-            pictureDetailViewModel.isPictureFavorite(item)
-            var containerState by rememberSaveable { mutableStateOf(ContainerState.Fab) }
-            val density = LocalDensity.current
-            val permissionManager = LocalPermissionManager.current
-            val coroutineScope = rememberCoroutineScope()
-
-            AnimatedVisibility(
-                visible = containerState == ContainerState.Fab,
-                enter = expandVertically() + slideInHorizontally {
-                    with(density) { 600.dp.roundToPx() }
-                },
-                exit = slideOutHorizontally {
-                    with(density) { 600.dp.roundToPx() }
-                } + shrinkVertically() + fadeOut()
-            ) {
-                val iconColor =
-                    if (favoriteState.value == IS_FAVORITE || favoriteState.value == FAVORITE_ADDED) {
-                        Color.Red
-                    } else {
-                        LocalContentColor.current
-                    }
-
-                Fab(
-                    modifier = Modifier
-                        .padding(end = 16.dp, bottom = 16.dp),
-                    icon = ic_favorite,
-                    tintColor = iconColor,
-                    contentDescription = R.string.add_to_favorites,
-                    onClick = {
-                        coroutineScope.launch {
-                            if (favoriteState.value == IS_FAVORITE) {
-                                pictureDetailViewModel.removeFavorite(item)
-                            } else if (favoriteState.value == IS_NOT_FAVORITE) {
-                                if (permissionManager.requestWriteExternalStoragePermission()) {
-                                    pictureDetailViewModel.saveFavorite(item)
-                                }
-                            }
+            Text(item.title, style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = item.copyright?.takeIf { it.isNotBlank() }?.let {
+                    "${item.date}${stringResource(R.string.picture_detail_date_separator)}$it"
+                } ?: item.date,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            item.explanation?.let {
+                Text(it, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(onClick = {
+                    coroutineScope.launch {
+                        if (favoriteState.value == IS_FAVORITE) {
+                            pictureDetailViewModel.removeFavorite(item)
+                        } else if (favoriteState.value == IS_NOT_FAVORITE &&
+                            permissionManager.requestWriteExternalStoragePermission()
+                        ) {
+                            pictureDetailViewModel.saveFavorite(item)
                         }
                     }
-                )
-            }
-
-            AnimatedContent(
-                targetState = containerState,
-                label = "container transform",
-            ) { state ->
-                when (state) {
-                    ContainerState.Fab -> Fab(
-                        modifier = Modifier
-                            .padding(end = 16.dp, bottom = 16.dp),
-                        icon = ic_info,
-                        contentDescription = R.string.show_explanation,
-                        onClick = { containerState = ContainerState.Fullscreen }
-                    )
-
-                    ContainerState.Fullscreen -> ExplanationView(item = item, onBackPressed = {
-                        containerState = ContainerState.Fab
-                    })
+                }) {
+                    Icon(ic_favorite, contentDescription = null)
+                    androidx.compose.foundation.layout.Spacer(Modifier.size(8.dp))
+                    Text(stringResource(R.string.picture_detail_save))
+                }
+                TextButton(onClick = { explanationVisible = true }) {
+                    Icon(ic_info, contentDescription = null)
+                    androidx.compose.foundation.layout.Spacer(Modifier.size(8.dp))
+                    Text(stringResource(R.string.picture_detail_about))
                 }
             }
         }

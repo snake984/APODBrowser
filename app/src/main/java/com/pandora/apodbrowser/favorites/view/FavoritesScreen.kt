@@ -3,8 +3,11 @@ package com.pandora.apodbrowser.favorites.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.favorites.viewmodel.FavoritesViewModel
-import com.pandora.apodbrowser.ui.SimplePicsGrid
+import com.pandora.apodbrowser.ui.FavoritePictureRow
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -48,18 +51,36 @@ fun FavoritesContent(
 ) {
     val favoritePics by favoritesViewModel.favorites.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
+    LazyColumn(
+        modifier = modifier.background(MaterialTheme.colorScheme.background).fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        item {
         Text(
-            text = stringResource(R.string.favorites_screen_title),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+            text = stringResource(R.string.favorites_collection_title),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(top = 16.dp)
         )
-        SimplePicsGrid(data = favoritePics, onItemClick = onItemClick)
+        }
+        item {
+            Text(
+                text = stringResource(R.string.favorites_collection_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        item {
+            Text(
+                text = stringResource(R.string.favorites_filter_all) +
+                    "    " + stringResource(R.string.favorites_filter_nebulae) +
+                    "    " + stringResource(R.string.favorites_filter_planets),
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+        items(favoritePics) { picture ->
+            FavoritePictureRow(picture, onItemClick = onItemClick)
+        }
     }
 }
