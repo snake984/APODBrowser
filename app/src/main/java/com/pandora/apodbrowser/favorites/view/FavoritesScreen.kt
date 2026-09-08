@@ -3,8 +3,11 @@ package com.pandora.apodbrowser.favorites.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pandora.apodbrowser.R
 import com.pandora.apodbrowser.favorites.viewmodel.FavoritesViewModel
-import com.pandora.apodbrowser.ui.SimplePicsGrid
+import com.pandora.apodbrowser.ui.FavoritePictureRow
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -48,18 +51,34 @@ fun FavoritesContent(
 ) {
     val favoritePics by favoritesViewModel.favorites.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
+    LazyColumn(
+        modifier = modifier.background(MaterialTheme.colorScheme.background).fillMaxSize(),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        item {
         Text(
-            text = stringResource(R.string.favorites_screen_title),
+            text = "Your collection",
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .paddingFromBaseline(top = 28.dp, bottom = 16.dp)
+            modifier = Modifier.padding(top = 8.dp)
         )
-        SimplePicsGrid(data = favoritePics, onItemClick = onItemClick)
+        }
+        item {
+            Text(
+                text = "The skies you want to remember",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        item {
+            Text(
+                text = "All    Nebulae    Planets",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+        items(favoritePics) { picture ->
+            FavoritePictureRow(picture, onItemClick = onItemClick)
+        }
     }
 }

@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,9 +20,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -180,6 +187,63 @@ fun LatestCollectionRow(
                 modifier = Modifier.size(256.dp, 144.dp),
                 onItemClick = onItemClick
             )
+        }
+    }
+
+}
+
+@Composable
+fun HeroPictureCard(
+    item: PicOfTheDayItem,
+    modifier: Modifier = Modifier,
+    onItemClick: (PicOfTheDayItem) -> Unit
+) {
+    Card(
+        modifier = modifier.clickable { onItemClick(item) },
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
+    ) {
+        Column {
+            GlideImage(
+                modifier = Modifier.fillMaxWidth().aspectRatio(1.65f),
+                imageModel = { item.url },
+                imageOptions = ImageOptions(contentScale = ContentScale.Crop)
+            )
+            Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("PICTURE OF THE DAY", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                Text(item.title, style = MaterialTheme.typography.titleLarge)
+                item.explanation?.let {
+                    Text(it, maxLines = 2, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FavoritePictureRow(
+    item: PicOfTheDayItem,
+    modifier: Modifier = Modifier,
+    onItemClick: (PicOfTheDayItem) -> Unit
+) {
+    Card(
+        modifier = modifier.clickable { onItemClick(item) },
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+    ) {
+        Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            GlideImage(
+                modifier = Modifier.size(86.dp).clip(RoundedCornerShape(16.dp)),
+                imageModel = { item.url },
+                imageOptions = ImageOptions(contentScale = ContentScale.Crop)
+            )
+            Column(
+                modifier = Modifier.weight(1f).padding(horizontal = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(item.title, maxLines = 2)
+                Text(item.date, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
     }
 }
