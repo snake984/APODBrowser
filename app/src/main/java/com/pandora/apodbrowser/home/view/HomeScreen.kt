@@ -19,9 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pandora.apodbrowser.R
-import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
 import com.pandora.apodbrowser.ui.ErrorView
 import com.pandora.apodbrowser.ui.LatestCollectionRow
@@ -32,16 +30,14 @@ import com.pandora.apodbrowser.ui.SearchResultsView
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.domain.errors.NetworkError
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    diComponent: HomeComponent,
+    homeViewModel: HomeViewModel = koinViewModel(),
     onItemClick: (PicOfTheDayItem) -> Unit = {},
 ) {
-    val homeViewModel: HomeViewModel = viewModel<HomeViewModel> {
-        diComponent.homeViewModelFactory().create(HomeViewModel::class.java)
-    }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(true) {

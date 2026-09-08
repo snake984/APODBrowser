@@ -19,18 +19,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pandora.apodbrowser.di.favoritesComponent
-import com.pandora.apodbrowser.di.homeComponent
-import com.pandora.apodbrowser.di.pictureDetailComponent
-import com.pandora.apodbrowser.favorites.di.FavoritesComponent
 import com.pandora.apodbrowser.favorites.view.FavoritesScreen
-import com.pandora.apodbrowser.home.di.HomeComponent
 import com.pandora.apodbrowser.home.view.HomeScreen
 import com.pandora.apodbrowser.navigation.NavigationRoute
 import com.pandora.apodbrowser.navigation.navigate
 import com.pandora.apodbrowser.permissions.PermissionManager
 import com.pandora.apodbrowser.permissions.PermissionManagerImpl
-import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import com.pandora.apodbrowser.picturedetail.view.PictureDetailScreen
 import com.pandora.apodbrowser.ui.model.PicOfTheDayItem
 import com.pandora.apodbrowser.ui.theme.APODBrowserTheme
@@ -48,9 +42,6 @@ class MainActivity : ComponentActivity() {
             APODBrowserTheme {
                 CompositionLocalProvider(LocalPermissionManager provides permissionManager) {
                     APODBrowserAppPortrait(
-                        homeComponent = homeComponent(),
-                        pictureDetailComponent = pictureDetailComponent(),
-                        favoritesComponent = favoritesComponent()
                     )
                 }
             }
@@ -106,9 +97,6 @@ private fun APODBrowserBottomNavigation(
 
 @Composable
 fun APODBrowserAppPortrait(
-    homeComponent: HomeComponent,
-    pictureDetailComponent: PictureDetailComponent,
-    favoritesComponent: FavoritesComponent,
 ) {
     APODBrowserTheme {
         val navController = rememberNavController()
@@ -126,7 +114,7 @@ fun APODBrowserAppPortrait(
                     modifier = Modifier.padding(padding)
                 ) {
                     composable(route = NavigationRoute.Home.destinationId) {
-                        HomeScreen(diComponent = homeComponent) {
+                        HomeScreen {
                             navController.navigate(NavigationRoute.PictureDetail, it)
                         }
                     }
@@ -139,7 +127,6 @@ fun APODBrowserAppPortrait(
                             )
                         item?.let {
                             PictureDetailScreen(
-                                diComponent = pictureDetailComponent,
                                 pictureItem = it
                             )
                         } ?: run {
@@ -147,7 +134,7 @@ fun APODBrowserAppPortrait(
                         }
                     }
                     composable(route = NavigationRoute.Favorites.destinationId) {
-                        FavoritesScreen(diComponent = favoritesComponent) {
+                        FavoritesScreen {
                             navController.navigate(NavigationRoute.PictureDetail, it)
                         }
                     }

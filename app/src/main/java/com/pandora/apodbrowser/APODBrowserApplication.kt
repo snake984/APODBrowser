@@ -1,30 +1,26 @@
 package com.pandora.apodbrowser
 
 import android.app.Application
-import com.pandora.apodbrowser.di.AppComponent
-import com.pandora.apodbrowser.di.AppModule
-import com.pandora.apodbrowser.di.DaggerAppComponent
-import com.pandora.apodbrowser.favorites.di.FavoritesComponent
-import com.pandora.apodbrowser.favorites.di.FavoritesComponentFactoryProvider
-import com.pandora.apodbrowser.home.di.HomeComponent
-import com.pandora.apodbrowser.home.di.HomeComponentFactoryProvider
-import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
-import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponentFactoryProvider
+import com.pandora.api.di.apiModule
+import com.pandora.apodbrowser.di.appModule
+import com.pandora.domain.di.domainModule
+import com.pandora.repositories.di.repositoriesModule
+import com.pandora.storage.di.storageModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-class APODBrowserApplication : Application(), HomeComponentFactoryProvider,
-    PictureDetailComponentFactoryProvider, FavoritesComponentFactoryProvider {
-
-    private val appComponent: AppComponent = DaggerAppComponent
-        .builder()
-        .appModule(AppModule(this))
-        .build()
-
-    override fun provideHomeComponentFactory(): HomeComponent.Factory =
-        appComponent.homeComponentFactory()
-
-    override fun providePictureDetailComponentFactory(): PictureDetailComponent.Factory =
-        appComponent.pictureDetailComponentFactory()
-
-    override fun provideFavoritesComponentFactory(): FavoritesComponent.Factory =
-        appComponent.favoritesComponentFactory()
+class APODBrowserApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@APODBrowserApplication)
+            modules(
+                appModule,
+                apiModule,
+                storageModule,
+                repositoriesModule,
+                domainModule
+            )
+        }
+    }
 }

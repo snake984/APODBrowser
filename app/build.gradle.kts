@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -79,8 +78,8 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.landscapist.glide)
     implementation(libs.lottie.compose)
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
     testImplementation(libs.junit5)
     testRuntimeOnly(libs.junit5.engine)

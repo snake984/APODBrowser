@@ -44,11 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pandora.apodbrowser.LocalNavController
 import com.pandora.apodbrowser.LocalPermissionManager
 import com.pandora.apodbrowser.R
-import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
 import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModel
 import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModel.PictureFavoriteState.FAVORITE_ADDED
 import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModel.PictureFavoriteState.IS_FAVORITE
@@ -67,6 +65,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import org.koin.androidx.compose.koinViewModel
 
 enum class ContainerState {
     Fab,
@@ -77,16 +76,13 @@ enum class ContainerState {
 @OptIn(ExperimentalMaterial3Api::class)
 fun PictureDetailScreen(
     modifier: Modifier = Modifier,
-    diComponent: PictureDetailComponent,
+    viewModel: PictureDetailViewModel = koinViewModel(),
     pictureItem: PicOfTheDayItem,
 ) {
     val navController = LocalNavController.current
 
     val item by rememberSaveable {
         mutableStateOf(pictureItem)
-    }
-    val viewModel: PictureDetailViewModel = viewModel<PictureDetailViewModel> {
-        diComponent.pictureDetailViewModelFactory().create(PictureDetailViewModel::class.java)
     }
     Scaffold(
         modifier = modifier,

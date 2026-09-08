@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -38,6 +37,5 @@ kotlin {
 dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.core)
 }

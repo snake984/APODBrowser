@@ -38,8 +38,7 @@ kotlin {
 dependencies {
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.core)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

@@ -1,31 +1,47 @@
 package com.pandora.apodbrowser.di
 
-import android.content.Context
-import com.pandora.apodbrowser.favorites.di.FavoritesComponent
-import com.pandora.apodbrowser.home.di.HomeComponent
-import com.pandora.apodbrowser.picturedetail.di.PictureDetailComponent
-import dagger.Module
-import dagger.Provides
+import com.pandora.apodbrowser.favorites.viewmodel.FavoritesViewModel
+import com.pandora.apodbrowser.home.viewmodel.HomeViewModel
+import com.pandora.apodbrowser.picturedetail.viewmodel.PictureDetailViewModel
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
+import org.koin.core.qualifier.named
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
-@Module(subcomponents = [HomeComponent::class, PictureDetailComponent::class, FavoritesComponent::class])
-class AppModule(private val applicationContext: Context) {
+const val DEFAULT_BACKGROUND_COROUTINE_CONTEXT_KEY = "Default"
+const val IO_BACKGROUND_COROUTINE_CONTEXT_KEY = "IO"
 
-    @Provides
-    fun provideApplicationContext(): Context = applicationContext
+val appModule = module {
+    single<CoroutineContext>(named(DEFAULT_BACKGROUND_COROUTINE_CONTEXT_KEY)) {
+        Dispatchers.Default
+    }
+    single<CoroutineContext>(named(IO_BACKGROUND_COROUTINE_CONTEXT_KEY)) {
+        Dispatchers.IO
+    }
 
-    @Provides
-    @Named(IO_BACKGROUND_COROUTINE_CONTEXT_KEY)
-    fun provideIOCoroutineContext(): CoroutineContext = Dispatchers.IO
-
-    @Provides
-    @Named(DEFAULT_BACKGROUND_COROUTINE_CONTEXT_KEY)
-    fun provideDefaultBackgroundCoroutineContext(): CoroutineContext = Dispatchers.Default
-
-    companion object {
-        const val DEFAULT_BACKGROUND_COROUTINE_CONTEXT_KEY = "Default"
-        const val IO_BACKGROUND_COROUTINE_CONTEXT_KEY = "IO"
+    viewModel {
+        HomeViewModel(
+            fetchPicsUsecase = get(),
+            fetchPaginatedPicsUsecase = get(),
+            backgroundCoroutineContext = get(named(DEFAULT_BACKGROUND_COROUTINE_CONTEXT_KEY))
+        )
+    }
+    viewModel {
+        FavoritesViewModel(
+            saveFavoritePicUsecase = get(),
+            removePicFromFavoriteUsecase = get(),
+            isPictureFavoriteUsecase = get(),
+            fetchFavoritePicsUsecase = get(),
+            backgroundCoroutineContext = get(named(IO_BACKGROUND_COROUTINE_CONTEXT_KEY))
+        )
+    }
+    viewModel {
+        PictureDetailViewModel(
+            isPictureFavoriteUsecase = get(),
+            saveFavoritePicUsecase = get(),
+            removePicFromFavoriteUsecase = get(),
+            backgroundCoroutineContext = get(named(IO_BACKGROUND_COROUTINE_CONTEXT_KEY))
+        )
     }
 }

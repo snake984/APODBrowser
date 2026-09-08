@@ -2,7 +2,6 @@ import org.gradle.kotlin.dsl.libs
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
@@ -43,7 +42,6 @@ kotlin {
 dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson.converter)
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.core)
     testImplementation(libs.junit)
 }

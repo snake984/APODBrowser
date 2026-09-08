@@ -6,26 +6,16 @@ import com.pandora.storage.database.APODBrowserDatabase
 import com.pandora.storage.database.dao.FavoritePicsDao
 import com.pandora.storage.filesystem.FileManager
 import com.pandora.storage.filesystem.MediaStoreFileManager
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import org.koin.dsl.module
 
-@Module
-object StorageModule {
-    @Provides
-    @Singleton
-    fun provideDatabase(applicationContext: Context): APODBrowserDatabase =
+val storageModule = module {
+    single<APODBrowserDatabase> {
         Room.databaseBuilder(
-            applicationContext,
+            get<Context>(),
             APODBrowserDatabase::class.java,
             "apod_browser_db"
         ).fallbackToDestructiveMigration().build()
-
-    @Provides
-    fun providePicOfTheDayDao(database: APODBrowserDatabase): FavoritePicsDao =
-        database.picOfTheDayDao()
-
-    @Provides
-    fun provideAppFileManager(applicationContext: Context): FileManager =
-        MediaStoreFileManager(applicationContext)
+    }
+    factory<FavoritePicsDao> { get<APODBrowserDatabase>().picOfTheDayDao() }
+    single<FileManager> { MediaStoreFileManager(get()) }
 }
